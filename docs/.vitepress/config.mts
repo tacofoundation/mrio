@@ -127,7 +127,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       items: [
         { text: 'Multidimensional GeoTIFF', link: 'multidimensional-geotiff-specification'},
         { text: 'Temporal GeoTIFF', link: 'temporal-geotiff-specification'},
-        { text: 'Best Practices', link: 'best-practices' }
+        // { text: 'Best Practices', link: 'best-practices' }
       ]
     }
   ]

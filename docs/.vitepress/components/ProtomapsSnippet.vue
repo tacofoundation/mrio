@@ -5,8 +5,8 @@
           <h2 class="big-title">Quick Start</h2>
           <p>See mrio API in action:</p>
           <ul>
-            <li>Create 5D data cubes from Sentinel-2 imagery (TOA/BOA, 2015-2024) as mGeoTIFF. <a href="./en/python/examples.html#writing-a-multidimensional-geotiff" class="arrow-link"><span class="arrow">→</span></a></li>
-            <li>Build 4D Landsat time series (1984-2024) in <br> mGeoTIFF format. <a href="./en/python/examples.html#writing-a-temporal-geotiff" class="arrow-link"><span class="arrow">→</span></a></li>
+            <li>Create 5D data cubes from Sentinel-2 imagery (TOA/BOA, 2015-2024) as mCOG. <a href="./en/python/examples.html#writing-a-multidimensional-geotiff" class="arrow-link"><span class="arrow">→</span></a></li>
+            <li>Build 4D Landsat time series (1984-2024) in <br> tCOG format. <a href="./en/python/examples.html#writing-a-temporal-geotiff" class="arrow-link"><span class="arrow">→</span></a></li>
           </ul>
         </div>
         

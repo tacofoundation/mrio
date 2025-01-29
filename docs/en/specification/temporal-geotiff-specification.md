@@ -4,6 +4,11 @@
 
 Temporal mini-datacubes are becoming increasingly popular in the Earth Observation community. They are used to store time series of satellite images, facilitating the analysis of land cover changes, crop monitoring, and other applications. Current formats lack an explicit convention for defining the temporal and spatial dimensions of datacubes. The temporal GeoTIFF (tGeoTIFF) specification refines the mGeoTIFF format by enforcing a more stringent convention for defining its dimensions.
 
+<figure style="display: flex; flex-direction: column; align-items: center">
+  <img src="../../public/content-gdal-ndim.svg" alt="Band GIF" style="width: 60%">
+</figure>
+
+
 ## Format
 
 This is the version `0.1.0` of the tGeoTIFF specification. The main difference between a mGeoTIFF and a tGeoTIFF is that the `md:pattern` is explicitly defined as `time band x y -> (band time) x y`. Additionally, certain attributes **MUST** be included in the `md:attributes` field of the **`MD_METADATA`** tag.
