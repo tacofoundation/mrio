@@ -78,7 +78,7 @@ creation_options = [
 ]
 ```
 
-Arrays of arbitrary dimensions are reshaped into a 3D array (band, y, x) using the `md:pattern` field. With the `INTERLEAVE=TILE` option (check to our post about [COGs](https://juliocontrerash.github.io/mrio_try_page/en/specification/cog.html#file-requirements)), data is compressed into `1 × BLOCKXSIZE × BLOCKYSIZE` tiles and arranged contiguously along the band dimension.
+Arrays of arbitrary dimensions are reshaped into a 3D array (band, y, x) using the `md:pattern` field. With the `INTERLEAVE=TILE` option (check to our post about [COGs](https://https://tacofoundation.github.io/mrio/en/specification/cog.html#file-requirements)), data is compressed into `1 × BLOCKXSIZE × BLOCKYSIZE` tiles and arranged contiguously along the band dimension.
 
 In a 4-D array, the `md:pattern` can be defined in two ways.
 
