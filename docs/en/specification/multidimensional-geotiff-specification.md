@@ -1,5 +1,6 @@
 # The Multidimensional COG
 
+
 ## Overview
 
 While multidimensional array formats such as NetCDF, HDF5, and Zarr are currently supported by many GIS software and GDAL, their general-purpose design poses challenges for geospatial interoperability. These formats do not inherently default to explicit metadata conventions, such as coordinate reference systems, spatial dimensions, overviews or temporal attributes. As a result, users often need to manually configure spatial parameters during data ingestion, leading to inconsistent interpretations, projection mismatches, and additional preprocessing steps that complicate geospatial workflows.
