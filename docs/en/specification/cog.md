@@ -157,7 +157,7 @@ The `KNOWN_INCOMPATIBLE_EDITION` tag is one of the most critical. It indicates w
 Finally, the `MASK_INTERLEAVED_WITH_IMAGERY` tag indicates whether the COG file contains a band masks with the imagery. For more details on band masks, refer to [GDAL RFC 15](https://gdal.org/en/stable/development/rfc/rfc15_nodatabitmask.html).
 
 <figure>
-  <img src="../../public/geotiff.svg" alt="GeoTIFF file structure" style="width: 100%">
+  <img src="../../public/geotiff_vs_cog.svg" alt="GeoTIFF file structure" style="width: 100%">
   <figcaption style="text-align: center"><b>**Figure 1:** </b>Differences between a normal GeoTIFF and a COG file structure.</figcaption>
 </figure>
 
