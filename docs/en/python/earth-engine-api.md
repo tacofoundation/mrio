@@ -2,10 +2,10 @@
 
 For users familiar with Google Earth Engine API, the `mrio` 
 package provides a similar interface for reading and 
-writing temporal GeoTIFF files.
+writing temporal COG files.
 
 ::: warning
-The multi-dimensional GeoTIFF files are not yet supported.
+The multi-dimensional COG files are not yet supported.
 :::
 
 
@@ -144,7 +144,7 @@ tensor = (
 
 ## `ic.save`
 
-Save the image collection to a Temporal GeoTIFF file.
+Save the image collection to a Temporal COG file.
 
 ```python
 ic.save(file_path: PathLike, **kwargs: Any) -> None
