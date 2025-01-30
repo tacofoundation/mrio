@@ -26,7 +26,7 @@ export default defineConfig({
       }
     },
     editLink: {
-      pattern: 'https://https://tacofoundation.github.io/mrio/edit/main/docs/:path',
+      pattern: 'https://github.com/tacofoundation/mrio/edit/main/docs/:path',
       text: 'Edit this page on GitHub'
     },
     socialLinks: [
