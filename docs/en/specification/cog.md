@@ -19,7 +19,7 @@ cloud era.
 
 ## Requirements to become a COG
 
-To be possible to perform partial reads in a COG the following requirements are needed:
+To enable partial reads in a COG, the following requirements must be satisfied:
 
 **Server-Side Requirements:**
 
@@ -32,13 +32,13 @@ To be possible to perform partial reads in a COG the following requirements are 
 
 - Can be compressed or uncompressed.
 
-- Tiled Data Organization: `TILE=YES` and `BLOCKXSIZE`/`BLOCKYSIZE` tags set in the GeoTIFF file. Pixel data is divided into rectangular tiles (e.g., 256x256 or 512x512) rather than stripped layouts.
+- Tiled Data Organization: `TILE=YES` and `BLOCKXSIZE`/`BLOCKYSIZE` tags set in the GeoTIFF file. Pixel data is divided into square tiles (e.g., 256x256 or 512x512) rather than stripped layouts.
 
 - Interleave chunk organization: From GDAL 3.11 onwards, the `INTERLEAVE` tag can be set as `PIXEL`, `BAND`, or `TILE`. Before GDAL 3.11, the default and only option was `PIXEL`.
 
 - Internal Overviews: Pyramid-style reduced-resolution versions (overviews) embedded within the file for rapid zoom-level rendering.
 
-- Optimized Byte Layout: Critical metadata structures, including the Image File Directory (IFD), are positioned at the beginning of the file. This "header-first" design allows clients to parse essential metadata without downloading the entire file.
+- Optimized Byte Layout: Critical metadata structures, i.e. the Image File Directory (IFD), are positioned at the beginning of the file. This "header-first" design allows clients to parse essential metadata without downloading the entire file.
 
 
 ## Server-Side Requirements: HTTP Range Requests
@@ -77,7 +77,7 @@ For example, fetching 3 tiles from a Cloud-Optimized GeoTIFF (COG) might necessi
 
 HTTP/2, released in 2015, transforms how range requests are handled. While the syntax for the `Range` header remains the same as in HTTP/1.1, the protocol introduces a binary framing layer and multiplexing capabilities.
 
-For example, consider the scenario of fetching 3 tiles from a Cloud-Optimized GeoTIFF (COG). With HTTP/2, multiple requests can be handled concurrently over a single connection, significantly reducing latency and improving performance. A client can request specific byte ranges—such as 5000–6000, 10,000–11,000, and 15,000–16,000—in parallel using a **single HTTP range request!**:
+For example, consider the scenario of fetching 3 tiles from a Cloud-Optimized GeoTIFF (COG). With HTTP/2, multiple requests can be handled concurrently over a single connection, significantly reducing latency and improving performance. A client can request specific byte ranges, such as 5000–6000, 10,000–11,000, and 15,000–16,000, using a **single HTTP range request!**:
 
 ```bash
 curl -H "Range: bytes=5000-6000, 10000-11000, 15000-16000" http://example.com/image.tif
@@ -103,31 +103,30 @@ Content-Range: bytes 15000-16000/1000000000
 --EXAMPLE_BOUNDARY--
 ```
 
-The `EXAMPLE_BOUNDARY` is a delimiter used in the multipart/byteranges response format to separate the different byte ranges in the payload. It is a unique string defined by the server (in this case, EXAMPLE_BOUNDARY is a placeholder) that ensures the client can correctly parse and distinguish between the multiple parts of the response. Each part of the response is preceded by the boundary string.
+The `EXAMPLE_BOUNDARY` is a delimiter used in the multipart/byteranges response format to separate the different byte ranges in the payload. It is a unique string defined by the server (in this case, EXAMPLE_BOUNDARY is a placeholder) that ensures the client can correctly parse and distinguish between the multiple parts of the response.
 
 ::: info
-Most cloud object storage services like Amazon S3, Google Cloud Storage, and Azure Blob Storage doest not support HTTP/2 yet. So it is important to consider the server-side requirements when working with COGs.
+Most cloud object storage services like Amazon S3, Google Cloud Storage, and Azure Blob Storage do not support HTTP/2 yet. So it is important to consider the server-side requirements when working with COGs.
 :::
 
 
 ## File Requirements
 
-Creating a Cloud-Optimized GeoTIFF (COG) with GDAL is a simple and efficient process. Key COG features like compression, tiling, internal overviews, and interleaved chunk organization are automatically handled using the command `gdal_translate -of COG ...`. Starting with GDAL [3.11](https://github.com/OSGeo/gdal/pull/11541#event-16013050336), a new option, `INTERLEAVE=TILE`, was introduced. This option provides a hybrid approach between `PIXEL` and `BAND` interleaved chunk organization. 
+Creating a Cloud-Optimized GeoTIFF (COG) with GDAL is a simple process. Key COG features like compression, tiling, internal overviews, and interleaved chunk organization are automatically handled using the command `gdal_translate -of COG ...`. Starting with GDAL [3.11](https://github.com/OSGeo/gdal/pull/11541#event-16013050336), a new option, `INTERLEAVE=TILE`, was introduced. This option provides a hybrid approach between `PIXEL` and `BAND` interleaved chunk organization (discussed in the previous article in this series).
 
 <figure style="display: flex; flex-direction: column; align-items: center">
   <img src="../../public/tiled.gif" alt="Tiled GIF" style="width: 100%">
   <figcaption style="text-align: center"><b>Figure 1: </b>The `INTERLEAVE=TILE` creation option</figcaption>  
 </figure>
 
+The `INTERLEAVE=TILE` option organizes data into chunks at the band level (`1 x H x W`), but it orders blocks in a way that is similar to pixel interleaving. This approach allows clients to read multiple bands with a single range request, as the band data bytes are stored contiguously. This feature is particularly useful when working with images that have many bands, such as hyperspectral images.
 
-The `INTERLEAVE=TILE` option organizes data into chunks at the band level (`HxW`), but it orders blocks in a way that is similar to pixel interleaving (`CxHxW`). This approach allows clients to read multiple bands with a single range request, as the band data bytes are stored contiguously. This feature is particularly useful when working with images that have many bands, such as hyperspectral images.
 
-
-For example, consider a hyperspectral image with 200 bands where you need to access the first 10 bands for a specific region of interest. If the image uses pixel interleaving (`CxHxW`), a single range request can retrieve all the tile data. However, because the data is compressed, you would need to download all bands, decompress them, extract the desired bands, and discard the rest. Conversely, with band interleaving (`HxW`), the data for each band is stored separately, requiring 10 separate range requests to access the first 10 bands, as the data is not contiguous. Using `INTERLEAVE=TILE` (also `HxW`), the data for these bands remains contiguous within the chunks, allowing you to make a single range request to retrieve only the bands you need. This hybrid approach reduces overhead and improves efficiency, particularly in cloud-based workflows.
+For example, consider a hyperspectral image with 200 bands where you need to access the first 10 bands for a specific pixel/region of interest. If the image uses pixel interleaving (`C x H x W`), a single range request can retrieve all the tile data. However, because the data is compressed, you would need to download all bands, decompress them, extract the desired bands, and discard the rest. Conversely, with band interleaving (`1 x H x W`), the data for each band is stored separately, requiring 10 separate range requests to access the first 10 bands, as the data is not contiguous. Using `INTERLEAVE=TILE` (also `1 x H x W`), the data for these bands **remains contiguous within the chunks**, allowing you to make a single range request to retrieve only the bands you need.
 
 
 :: info
-The main drawback of using `INTERLEAVE=TILE` is that the final file size will be larger compared to using `INTERLEAVE=PIXEL`. This is because compression is applied at the band level (`HxW`) rather than the pixel level (`CxHxW`). The difference in file size depends on the correlation between bands and the compression method used.
+The main drawback of using `INTERLEAVE=TILE` is that the final file size will be larger compared to using `INTERLEAVE=PIXEL`. This is because compression is applied at the band level (`1 x H x W`) rather than the pixel level (`C x H x W`). The difference in file size depends on the correlation between bands and the compression method used.
 ::
 
 ### Optimized Byte Layout
@@ -154,18 +153,16 @@ The `BLOCK_LEADER` and `BLOCK_TRAILER` tags are used to verify the integrity of 
 
 The `KNOWN_INCOMPATIBLE_EDITION` tag is one of the most critical. It indicates whether the COG file is still compliant with the COG specification. For example, if you create a COG file and later append additional overviews (i.e. add new IFDs) using the gdaladdo command, GDAL will automatically set this tag to YES. This signals that the file is no longer a valid COG, and GDAL will issue a warning message.
 
-Finally, the `MASK_INTERLEAVED_WITH_IMAGERY` tag indicates whether the COG file contains a band masks with the imagery. For more details on band masks, refer to [GDAL RFC 15](https://gdal.org/en/stable/development/rfc/rfc15_nodatabitmask.html).
+Finally, the `MASK_INTERLEAVED_WITH_IMAGERY` tag indicates whether the COG file contains a band mask with the imagery. For more details on band masks, refer to [GDAL RFC 15](https://gdal.org/en/stable/development/rfc/rfc15_nodatabitmask.html).
 
 <figure>
   <img src="../../public/geotiff_vs_cog.svg" alt="GeoTIFF file structure" style="width: 100%">
-  <figcaption style="text-align: center"><b>**Figure 1:** </b>Differences between a normal GeoTIFF and a COG file structure.</figcaption>
+  <figcaption style="text-align: center"><b>Figure 2:</b>Differences between a normal GeoTIFF and a COG file structure.</figcaption>
 </figure>
-
 
 ### GDAL tricks to read faster a COG file
 
 To optimize GDAL for faster access to Cloud-Optimized GeoTIFFs (COGs), several configuration settings and environment variables can dramatically improve performance. In this last section, we will explore some of these tricks that can help you read COGs more efficiently. For a full list of adjustable parameters, consult the [GDAL configuration options](https://gdal.org/en/stable/user/configoptions.html). Additionally, [TiTiler](https://developmentseed.org/titiler/) has a great post about tuning GDAL for COGs that you can find [here](https://developmentseed.org/titiler/advanced/performance_tuning/).
-
 
 #### HTTP Request Optimization
 
@@ -177,7 +174,7 @@ There is a limit to the number of ranges that can be merged. By default, GDAL wi
 
 #### Reduce filescan
 
-Configure `GDAL_DISABLE_READDIR_ON_OPEN=EMPTY_DIR` to prevent GDAL from scanning the entire directory when opening a file. By default, GDAL lists all files in the directory, which can trigger costly GET/LIST requests (especially for requester-pay buckets). Setting this to EMPTY_DIR skips directory scanning unless external overviews (e.g., .ovr files) are required. If your COGs rely on external overviews, use FALSE instead.
+Configure `GDAL_DISABLE_READDIR_ON_OPEN=EMPTY_DIR` to prevent GDAL from scanning the entire directory when opening a file. By default, GDAL lists all files in the directory, which can trigger costly GET/LIST requests. Setting this to EMPTY_DIR skips directory scanning unless external overviews (e.g., .ovr files) are required. If your COGs rely on external overviews, use FALSE instead.
 
 #### File Access Restrictions
 
@@ -195,9 +192,7 @@ Adjust `GDAL_INGESTED_BYTES_AT_OPEN` to control how many initial bytes GDAL read
 
 #### Block Cache Type
 
-GDAL caches raster blocks (e.g., tiles in a Cloud-Optimized GeoTIFF) to avoid repeated disk/network fetches. However, the default `GDAL_BAND_BLOCK_CACHE=ARRAY` method pre-allocates memory for every possible block in the dataset. For massive datasets (e.g., high-zoom-level satellite imagery with millions of tiles), this can crash applications due to excessive memory usage.
-
-The `GDAL_BAND_BLOCK_CACHE=HASHSET` method solves this by dynamically allocating memory only for blocks actually accessed, making it far more efficient for large datasets.
+GDAL caches chunk tiles (i.e., `C x H x W` or `1 x H x W`) to avoid repeated disk/network fetches. However, the default `GDAL_BAND_BLOCK_CACHE=ARRAY` method pre-allocates memory for every possible block in the dataset. For massive datasets (e.g., high-zoom-level satellite imagery with millions of tiles), this can crash applications due to excessive memory usage. The `GDAL_BAND_BLOCK_CACHE=HASHSET` method solves this by dynamically allocating memory only for blocks actually accessed, making it far more efficient for large datasets.
 
 | ARRAY | HASHSET |
 |-------|---------|
@@ -210,13 +205,11 @@ By default, GDAL uses the `AUTO` setting, which selects ARRAY for small datasets
 
 #### Proj Network Enhancements
 
-Enable `PROJ_NETWORK=ON` to let PROJ fetch high-accuracy transformation grids from the cloud, improving coordinate reprojection for precision-critical applications.
-
+Enable `PROJ_NETWORK=ON` to let PROJ fetch high-accuracy transformation grids from the cloud, improving coordinate reprojection for **precision-critical applications**. It is not necessary for UTM grid zones. Check the [PROJ RFC 4](https://proj.org/en/stable/community/rfc/rfc-4.html#rfc4) for details.
 
 #### Final Recommended Configuration
 
 For most COG workflows, apply these settings:
-
 
 ```bash
 export GDAL_HTTP_MERGE_CONSECUTIVE_RANGES=YES
