@@ -21,8 +21,10 @@ The `MD_METADATA` tag is embedded within the `TIFFTAG_GDAL_METADATA` ASCII tag (
 | md:pattern | string | Yes | A string defining the strategy to reshape the data into a 3D array (band, x, y). It is based on the Einstein-Inspired Notation for OPerationS, einops. The pattern is a space-separated list of dimension names, followed by an arrow `->`, and the new order of the dimensions. For example, `time band y x -> (time band) y x` rearranges the dimensions from `(time, band, y, x)` to `time×band y x`, where `time×band` is a new number of channels. As GeoTIFF define explicitly the `y` and `x` dimensions, the pattern **MUST** always include them. There is no restriction on the number of dimensions. Refer to the [einops paper](https://openreview.net/pdf?id=oapKSVM2bcj) for more details about the notation. |
 | md:coordinates | dictionary | Yes | A dictionary defining the coordinates to be combined with the pattern. The values **MUST** be lists of data types compliant with the [JSON standard](https://www.json.org/json-en.html). |
 | md:attributes | dictionary | No | A dictionary of additional metadata attributes to include in the file. It **MUST** comply with the [JSON standard](https://www.json.org/json-en.html). |
-| md:dimensions | list | No | A list of dimension names, where the order **MUST** align with the order specified in `md:pattern` before the arrow `->`. |
-| md:coordinates_len | dictionary | No | A dictionary defining the length of each dimension. The values **MUST** be integers. It is created automatically when it is not provided. |
+| md:dimensions | list | No | A list of dimension names, where the order **MUST** align with the order specified in `md:pattern` before the arrow `->`. If not provided, it is automatically generated based on the `md:pattern` key. |
+| md:coordinates_len | dictionary | No | A dictionary defining the length of each dimension. The values **MUST** be integers. If omitted, it is automatically determined from the `md:coordinates` key. |
+
+It is created automatically when it is not provided.
 
 ## Example
 
