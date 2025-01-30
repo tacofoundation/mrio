@@ -2,7 +2,7 @@
 
 ## Overview
 
-Temporal mini-datacubes are becoming increasingly popular in the Earth Observation community. They are used to store time series of satellite images, facilitating the analysis of land cover changes, crop monitoring, and other applications. Current formats lack an explicit convention for defining the temporal and spatial dimensions of datacubes. The temporal GeoTIFF (tGeoTIFF) specification refines the mGeoTIFF format by enforcing a more stringent convention for defining its dimensions.
+[Temporal mini cubes](https://www.cambridge.org/core/journals/environmental-data-science/article/earth-system-data-cubes-avenues-for-advancing-earth-system-research/C49F497A29699C7A1A6A2830755CAA6D) are becoming increasingly popular in the Earth Observation community. They are used to store time series of satellite images, facilitating the analysis of land cover changes, crop monitoring, and other applications. Current formats ([GeoZarr](https://github.com/zarr-developers/geozarr-spec/blob/main/geozarr-spec.md) and [HDF5](https://www.hdfgroup.org/solutions/hdf5/)) lack an explicit convention for defining the temporal and spatial dimensions of datacubes. The temporal COG (tCOG) specification refines the mCOG format by enforcing a more stringent convention for defining its dimensions.
 
 <figure style="display: flex; flex-direction: column; align-items: center">
   <img src="../../public/content-gdal-ndim.svg" alt="Band GIF" style="width: 60%">
@@ -11,7 +11,7 @@ Temporal mini-datacubes are becoming increasingly popular in the Earth Observati
 
 ## Format
 
-This is the version `0.1.0` of the tGeoTIFF specification. The main difference between a mGeoTIFF and a tGeoTIFF is that the `md:pattern` is explicitly defined as `time band x y -> (band time) x y`. Additionally, certain attributes **MUST** be included in the `md:attributes` field of the **`MD_METADATA`** tag.
+This is the version `0.0.1` of the tCOG specification. The main difference between a mCOG and a tCOG is that the `md:pattern` is explicitly defined as `time band x y -> (band time) x y`. Additionally, certain attributes **MUST** be included in the `md:attributes` field of the **`MD_METADATA`** mCOG tag.
 
 | Attribute | Type | Required | Details |
 |---|---|---|---|
@@ -25,12 +25,12 @@ The following is an example of the `MD_METADATA` tag in a tGeoTIFF file:
 
 ```json
 {
-  "md:pattern": "time band lat lon -> (time band) lat lon",
+  "md:pattern": "time band y x -> (band time) y x",
   "md:coordinates": {
     "time": ["2021-01-01", "2021-01-02", "2021-01-03"],
     "band": ["B01", "B02", "B03"]
   },
-  "md:dimensions": ["time", "band", "lat", "lon"],
+  "md:dimensions": ["time", "band", "y", "x"],
   "md:attributes": {
     "title": "Temporal GeoTIFF Example",
     "description": "This is a toy example of a Temporal GeoTIFF file.",
