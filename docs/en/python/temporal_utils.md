@@ -2,21 +2,18 @@
 
 For users that want a easy to stack/unstack temporal data, this module provides a set of functions to help with that.
 
-
-
 ## `mrio.temporal.unstack`
 
-Unstacks a temporal GeoTIFF file into multiple GeoTIFF files, one 
+Unstacks a temporal COG file into multiple COG files, one 
 for each time step.
 
 ```python
 mrio.temporal.unstack(input_file: PathLike, output_dir: PathLike)
 ```
 
-
 ### Parameters
 
-- `input_file` (PathLike): Path to the input Temporal GeoTIFF file.
+- `input_file` (PathLike): Path to the input Temporal COG file.
 - `output_dir` (PathLike): Path to the output directory where the unstacked files will be saved.
 
 ### Returns
@@ -38,7 +35,7 @@ mrio.temporal.unstack(input_file, output_dir)
 
 ## `mrio.temporal.stack`
 
-Stacks multiple GeoTIFF files into a single temporal GeoTIFF file.
+Stacks multiple COG files into a single temporal COG file.
 
 ```python
 mrio.temporal.stack(files: List[PathLike], output_file: PathLike, files_dates: List[datetime.datetime], files_ids: Optional[List[str]] = None) -> Path
@@ -46,15 +43,14 @@ mrio.temporal.stack(files: List[PathLike], output_file: PathLike, files_dates: L
 
 ### Parameters
 
-- `files` (List[PathLike]): List of paths to the input GeoTIFF files.
-- `output_file` (PathLike): Path to the output Temporal GeoTIFF file.
+- `files` (List[PathLike]): List of paths to the input COG files.
+- `output_file` (PathLike): Path to the output Temporal COG file.
 - `files_dates` (List[datetime.datetime]): List of datetime objects representing the dates of the input files.
 - `files_ids` (Optional[List[str]]): List of strings representing the ids of the input files. If not provided, the filenames will be used.
 
 ### Returns
 
-The path to the output temporal GeoTIFF file as a pathlib.Path object.
-
+The path to the output temporal COG file as a pathlib.Path object.
 
 ### Example
 
