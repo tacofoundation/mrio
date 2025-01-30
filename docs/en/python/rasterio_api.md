@@ -1,6 +1,6 @@
 # rasterio-like I/O API
 
-The simplest way to handle multi-dimensional and temporal GeoTIFF files 
+The simplest way to handle multi-dimensional and temporal COG files 
 is through the `mrio.open` function. This function serves as a drop-in 
 replacement for `rasterio.open`.
 
@@ -13,7 +13,7 @@ Additionally, `mrio` provides two convenient wrapper functions:
 
 ## `mrio.open`
 
-Opens a multi-dimensional or temporal GeoTIFF file in read or write mode. This function provides a unified interface for opening both standard and multi-resolution GeoTIFF files.
+Opens a multi-dimensional or temporal COG file in read or write mode.
 
 ```python
 mrio.open(file_path: PathLike, mode: str = Mode.READ, engine: str = "xarray", **kwargs: Any) -> DatasetReader | DatasetWriter:
@@ -72,7 +72,6 @@ mrio.read(file_path: PathLike, engine: str = "xarray", **kwargs: Any) -> Dataset
 - `file_path`: Path to the dataset file. It can be a string or Path object.
 - `engine`: The engine used to read the data. The default is 'xarray'. Other options include 'numpy'.
 - `**kwargs`: Additional keyword arguments passed to the reader.
-
 
 **Returns:**
     A `DatasetReader` object.

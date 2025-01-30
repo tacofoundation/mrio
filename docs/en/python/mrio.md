@@ -1,9 +1,8 @@
-
 # What is mrio?
 
 ## Overview
 
-`mrio` is a Python package that extends rasterio to handle multi-dimensional and temporal GeoTIFF files with a familiar, intuitive syntax. Built for Earth Observation people who need robust and **explicit** handling of n-dimensional data while maintaining a straightforward and efficient workflow.
+`mrio` is a Python package that extends rasterio to handle multi-dimensional and temporal COG files with a familiar, intuitive syntax. Built for Earth Observation people who need robust and **explicit** handling of n-dimensional data while maintaining a straightforward and efficient workflow.
 
 ::: info
 The `mrio.open` function currently does not support all the features available
@@ -14,10 +13,10 @@ save the intermediate results and switch to `mrio.open`.
 
 ## Key Features
 
-- Read and write multi-dimensional and temporal GeoTIFF files.
+- Read and write multi-dimensional and temporal COG files.
 - Compatible syntax with rasterio.
 - Google Earth Engine-style interface for temporal operations.
-- Built-in conversion from temporal GeoTIFF to a STAC catalog.
+- Built-in conversion from temporal COG to simple COG.
 - Built-in file validation.
 - Drag-and-drop support in QGIS and ArcGIS.
 - It also includes all the functionality you expect from a standard GeoTIFF file.
