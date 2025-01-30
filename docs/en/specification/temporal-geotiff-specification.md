@@ -5,7 +5,7 @@
 [Temporal mini cubes](https://www.cambridge.org/core/journals/environmental-data-science/article/earth-system-data-cubes-avenues-for-advancing-earth-system-research/C49F497A29699C7A1A6A2830755CAA6D) are becoming increasingly popular in the Earth Observation community. They are used to store time series of satellite images, facilitating the analysis of land cover changes, crop monitoring, and other time-sensitive applications. Current formats ([GeoZarr](https://github.com/zarr-developers/geozarr-spec/blob/main/geozarr-spec.md) and [HDF5](https://www.hdfgroup.org/solutions/hdf5/)) lack an explicit convention for defining the temporal and spatial dimensions of datacubes. The temporal COG (tCOG) specification refines the mCOG format by enforcing a more stringent convention for defining the time dimension.
 
 <figure style="display: flex; flex-direction: column; align-items: center">
-  <img src="../../public/content-gdal-ndim.svg" alt="Band GIF" style="width: 60%">
+  <img src="../../public/content-tcog.svg" alt="Band GIF" style="width: 60%">
 </figure>
 
 ## Format

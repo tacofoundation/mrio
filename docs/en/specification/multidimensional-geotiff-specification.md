@@ -8,7 +8,7 @@ While multidimensional array formats such as NetCDF, HDF5, and Zarr are currentl
 The Multidimensional COG (mCOG) specification extends the traditional GeoTIFF format to support N-dimensional arrays. **Our core principle is that everything should be explicit by default**. It maintains the simplicity and compatibility of COG/GeoTIFF, offers fast access and the ability to be opened by any GIS software or library that supports the GDALGeoTIFF format.
 
 <figure style="display: flex; flex-direction: column; align-items: center">
-  <img src="../../public/content-gdal-ndim.svg" alt="Band GIF" style="width: 60%">
+  <img src="../../public/content-mcog.svg" alt="Band GIF" style="width: 60%">
 </figure>
 
 ## File format details
