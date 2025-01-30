@@ -1,4 +1,4 @@
-# The Multidimensional GeoTIFF
+# The Multidimensional COG
 
 ## Overview
 

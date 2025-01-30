@@ -1,4 +1,4 @@
-# The Temporal GeoTIFF
+# The Temporal COG
 
 ## Overview
 

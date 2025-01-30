@@ -117,16 +117,14 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'GeoTIFF', link: 'geotiff' },
         { text: 'GDALGeoTIFF', link: 'gdal-geotiff' },
         { text: 'COG', link: 'cog' },
-        // { text: 'Multidimensional COG?', link: 'multidimensional-geotiff'},
-        // { text: 'Temporal COG', link: 'temporal-geotiff'}
       ]
     },
     {
       text: 'Specification',
       collapsed: false,
       items: [
-        { text: 'Multidimensional GeoTIFF', link: 'multidimensional-geotiff-specification'},
-        { text: 'Temporal GeoTIFF', link: 'temporal-geotiff-specification'},
+        { text: 'Multidimensional COG', link: 'multidimensional-geotiff-specification'},
+        { text: 'Temporal COG', link: 'temporal-geotiff-specification'},
         // { text: 'Best Practices', link: 'best-practices' }
       ]
     }
