@@ -1,8 +1,10 @@
 # Attributes
 
-This section outlines the attributes associated with the [DatasetReader](#) class. In addition to the standard attributes provided by the [rasterio](#) library, we introduce extended attributes for compatibility with [xarray](#) objects.
+This section outlines the attributes associated with the 
+[DatasetReader](https://github.com/tacofoundation/mrio-python/blob/708ce05b5cebbf38c2114399ed54c5b4b5769443/mrio/readers.py#L36) class. In addition to the standard attributes provided by the [rasterio](https://rasterio.readthedocs.io/en/stable/topics/reading.html) library, 
+we introduce extended attributes for compatibility with [xarray](https://docs.xarray.dev/en/latest/generated/xarray.DataArray.html#xarray.DataArray) objects.
 
-## Attributes from GeoTIFF standard
+## Attributes from COG standard
 
 ### block_shapes
 
@@ -10,7 +12,10 @@ This section outlines the attributes associated with the [DatasetReader](#) clas
 The `block_shapes` in mrio is different from the `block_shapes` in rasterio.
 :::
 
-The `block_shapes` in rasterio returns a List of tuples of the block shapes for each band in the dataset. In mrio, we return just a tuple because, in multi-dimensional GeoTIFF files, the block shapes are the same for all bands in the dataset. We keep the same name for consistency with the rasterio library.
+The `block_shapes` in rasterio returns a List of tuples of the block shapes for each band in 
+the dataset. In mrio, we return just a tuple because, in multi-dimensional COG files, the 
+block shapes are the same for all bands in the dataset. We keep the same name for consistency 
+with the rasterio library.
 
 ```python
 import mrio
@@ -61,7 +66,7 @@ mrio.read("example.tif").crs.to_epsg()
 
 ### descriptions
 
-The descriptions for each dataset band. This fields is always present in multi-dimensional GeoTIFF files. The returned value is a list of strings.
+The descriptions for each dataset band. This fields is always present in multi-dimensional COG files. The returned value is a list of strings.
 
 
 ```python
@@ -86,7 +91,7 @@ mrio.read("example.tif").driver
 The `dtypes` in mrio is different from the `dtypes` in rasterio.
 :::
 
-The `dtypes` in rasterio returns a List of strings of the data types for each band in the dataset. In mrio, we return just a string because in multi-dimensional GeoTIFF files, the data types are the same for all bands in the dataset. We keep the same name for consistency with the rasterio library.
+The `dtypes` in rasterio returns a List of strings of the data types for each band in the dataset. In mrio, we return just a string because in multi-dimensional COG files, the data types are the same for all bands in the dataset. We keep the same name for consistency with the rasterio library.
 
 ```python
 import mrio
@@ -231,7 +236,7 @@ mrio.read("example.tif").options
 ### photometric
 
 ::: warning
-In multi-dimensional GeoTIFF files, all dimensions are merged into the band space. Therefore, the photometric interpretation must always remain unspecified.
+In multi-dimensional COG files, all dimensions are merged into the band space. Therefore, the photometric interpretation must always remain unspecified.
 :::
 
 The photometric interpretation of the dataset. The returned value is a enum of type `Photometric`. The possible values are: None, `black`, `cielab`, `cmyk`, `icclab`, `itulab`, `rgb`, `white`, `ycbcr`. Check the [rasterio photometric documentation](https://rasterio.readthedocs.io/en/latest/api/rasterio.enums.html#rasterio.enums.PhotometricInterp) for more information.
@@ -243,7 +248,7 @@ mrio.read("example.tif").photometric.name
 ```
 
 ### profile
-The rasterio basic metadata and creation GeoTIFF options. The returned value is a dictionary. Contrary to the `meta` attribute, the `profile` attribute includes the parameters used to create the GeoTIFF file.
+The rasterio basic metadata and creation COG options. The returned value is a dictionary. Contrary to the `meta` attribute, the `profile` attribute includes the parameters used to create the COG file.
 
 ```python
 import mrio
@@ -284,7 +289,7 @@ mrio.read("example.tif").scales
 
 ### subdatasets
 
-The subdatasets of the dataset. The returned value is a list of strings. In the GeoTIFF standard, the subdatasets are stored as metadata in the main dataset. From  GDAL 3.0, is it possible to create Multi-page GeoTIFF files with the `APPEND_SUBDATASET=YES` option. So, technically, it is possible to create a Multi-page Multi-dimensional GeoTIFF file.
+The subdatasets of the dataset.
 
 ```python
 import mrio
@@ -308,7 +313,7 @@ mrio.read("example.tif").transform
 The `units` in mrio is different from the `units` in rasterio.
 :::
 
-The units of the dataset. In mrio, we return just a string because in multi-dimensional GeoTIFF files, the units are the same for all bands in the dataset. We keep the same name for consistency with the rasterio library.
+The units of the dataset. In mrio, we return just a string because in multi-dimensional COG files, the units are the same for all bands in the dataset. We keep the same name for consistency with the rasterio library.
 
 ```python
 import mrio
@@ -330,7 +335,7 @@ mrio.read("example.tif").width
 
 ## shape
 
-The shape of the multi-dimensional GeoTIFF file. The returned value is a tuple of integers.
+The shape of the multi-dimensional COG file. The returned value is a tuple of integers.
 
 ```python
 import mrio
@@ -340,7 +345,7 @@ mrio.read("example.tif").shape
 
 ## mode
 
-The mode of the multi-dimensional GeoTIFF file. Only two modes are supported: 'r' for read and 'w' for write. The 
+The mode of the multi-dimensional COG file. Only two modes are supported: 'r' for read and 'w' for write. The 
 returned value is a string.
 
 ```python
@@ -361,7 +366,7 @@ mrio.read("example.tif").attrs
 
 ## chunks
 
-The chunk size of the multi-dimensional GeoTIFF file.
+The chunk size of the multi-dimensional COG file.
 
 ```python
 import mrio
@@ -381,7 +386,7 @@ mrio.read("example.tif").coords
 
 ## dtype
 
-The data type of the multi-dimensional GeoTIFF file. The returned value is a string.
+The data type of the multi-dimensional COG file. The returned value is a string.
 
 ```python
 import mrio
@@ -391,7 +396,7 @@ mrio.read("example.tif").dtype
 
 ## ndim
 
-The number of dimensions of the multi-dimensional GeoTIFF file. The returned value is an integer.
+The number of dimensions of the multi-dimensional COG file. The returned value is an integer.
 
 ```python
 import mrio
@@ -401,7 +406,7 @@ mrio.read("example.tif").ndim
 
 ## size
 
-The size in bytes of the multi-dimensional GeoTIFF file. The returned value is an integer.
+The size in bytes of the multi-dimensional COG file. The returned value is an integer.
 
 ```python
 import mrio
