@@ -1,32 +1,32 @@
 <template>
   <div class="contenedor">
-    <div class="cubo cubo-1"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-2"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-3"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-4"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-5"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-6"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-7"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-8"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-9"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-10"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-11"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-12"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-13"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-14"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-15"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-16"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-17"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-18"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-19"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-20"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-21"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-22"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-23"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-24"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-25"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-26"><img src="/cubo.svg" alt="Cubo" /></div>
-    <div class="cubo cubo-27"><img src="/cubo.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-1"><img src="/cubo1.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-2"><img src="/cubo2.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-3"><img src="/cubo3.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-4"><img src="/cubo4.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-5"><img src="/cubo5.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-6"><img src="/cubo6.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-7"><img src="/cubo7.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-8"><img src="/cubo8.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-9"><img src="/cubo9.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-10"><img src="/cubo2.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-11"><img src="/cubo4.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-12"><img src="/cubo6.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-13"><img src="/cubo8.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-14"><img src="/cubo1.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-15"><img src="/cubo3.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-16"><img src="/cubo5.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-17"><img src="/cubo7.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-18"><img src="/cubo9.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-19"><img src="/cubo9.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-20"><img src="/cubo7.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-21"><img src="/cubo5.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-22"><img src="/cubo3.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-23"><img src="/cubo1.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-24"><img src="/cubo8.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-25"><img src="/cubo6.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-26"><img src="/cubo4.svg" alt="Cubo" /></div>
+    <div class="cubo cubo-27"><img src="/cubo2.svg" alt="Cubo" /></div>
 </div>
 </template>
 
@@ -45,7 +45,7 @@
   --dist-cubes-nn-aa: calc(var(--dist-cubes-nn) + var(---aa));
   --dist-content-np: calc(var(--content-len) / 2);
   --dist-content-nn: calc(-1 * var(--dist-content-np));
-  --time: 10s;
+  --time: 7s;
 }
 
 .contenedor {
@@ -105,19 +105,7 @@
     transform: translate(var(--dist-cubes-nn), var(--dist-cubes-nn));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -13), 0);
-    opacity: 0.1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -13), 0);
-    opacity: 0.1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-nn), var(--dist-cubes-nn));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-nn), var(--dist-cubes-nn));
     opacity: 1;
   }
@@ -154,19 +142,7 @@
     transform: translate(0, calc(var(--dist-cubes-nn)));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -12), 0);
-    opacity: 0.1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -12), 0);
-    opacity: 0.1;
-  }
   80% {
-    transform: translate(0, calc(var(--dist-cubes-nn)));
-    opacity: 1;
-  }
-  90% {
     transform: translate(0, calc(var(--dist-cubes-nn)));
     opacity: 1;
   }
@@ -202,19 +178,7 @@
     transform: translate(var(--dist-cubes-np), var(--dist-cubes-nn));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -11), 0);
-    opacity: 0.1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -11), 0);
-    opacity: 0.1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-np), var(--dist-cubes-nn));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-np), var(--dist-cubes-nn));
     opacity: 1;
   }
@@ -250,19 +214,7 @@
     transform: translate(var(--dist-cubes-nn), 0);
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -10), 0);
-    opacity: 0.1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -10), 0);
-    opacity: 0.1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-nn), 0);
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-nn), 0);
     opacity: 1;
   }
@@ -298,19 +250,7 @@
     transform: translate(0, 0);
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -9), 0);
-    opacity: 0.1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -9), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-  90% {
     transform: translate(0, 0);
     opacity: 1;
   }
@@ -346,19 +286,7 @@
     transform: translate(var(--dist-cubes-np), 0);
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -8), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -8), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-np), 0);
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-np), 0);
     opacity: 1;
   }
@@ -394,19 +322,7 @@
     transform: translate(var(--dist-cubes-nn), var(--dist-cubes-np));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -7), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -7), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-nn), var(--dist-cubes-np));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-nn), var(--dist-cubes-np));
     opacity: 1;
   }
@@ -442,19 +358,7 @@
     transform: translate(0, var(--dist-cubes-np));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -6), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -6), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(0, var(--dist-cubes-np));
-    opacity: 1;
-  }
-  90% {
     transform: translate(0, var(--dist-cubes-np));
     opacity: 1;
   }
@@ -490,19 +394,7 @@
     transform: translate(var(--dist-cubes-np), var(--dist-cubes-np));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -5), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -5), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-np), var(--dist-cubes-np));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-np), var(--dist-cubes-np));
     opacity: 1;
   }
@@ -538,19 +430,7 @@
     transform: translate(var(--dist-cubes-nn-a), var(--dist-cubes-nn-a));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -4), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -4), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-nn-a), var(--dist-cubes-nn-a));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-nn-a), var(--dist-cubes-nn-a));
     opacity: 1;
   }
@@ -586,19 +466,7 @@
     transform: translate(var(---a), var(--dist-cubes-nn-a));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -3), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -3), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(---a), var(--dist-cubes-nn-a));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(---a), var(--dist-cubes-nn-a));
     opacity: 1;
   }
@@ -634,19 +502,7 @@
     transform: translate(var(--dist-cubes-np-a), var(--dist-cubes-nn-a));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -2), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -2), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-np-a), var(--dist-cubes-nn-a));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-np-a), var(--dist-cubes-nn-a));
     opacity: 1;
   }
@@ -682,19 +538,7 @@
     transform: translate(var(--dist-cubes-nn-a), var(---a));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * -1), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * -1), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-nn-a), var(---a));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-nn-a), var(---a));
     opacity: 1;
   }
@@ -730,19 +574,7 @@
     transform: translate(var(---a), var(---a));
     opacity: 1;
   }
-  70% {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(---a), var(---a));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(---a), var(---a));
     opacity: 1;
   }
@@ -778,19 +610,7 @@
     transform: translate(var(--dist-cubes-np-a), var(---a));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 1), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 1), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-np-a), var(---a));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-np-a), var(---a));
     opacity: 1;
   }
@@ -826,19 +646,7 @@
     transform: translate(var(--dist-cubes-nn-a), var(--dist-cubes-np-a));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 2), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 2), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-nn-a), var(--dist-cubes-np-a));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-nn-a), var(--dist-cubes-np-a));
     opacity: 1;
   }
@@ -874,19 +682,7 @@
     transform: translate(var(---a), var(--dist-cubes-np-a));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 3), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 3), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(---a), var(--dist-cubes-np-a));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(---a), var(--dist-cubes-np-a));
     opacity: 1;
   }
@@ -922,19 +718,7 @@
     transform: translate(var(--dist-cubes-np-a), var(--dist-cubes-np-a));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 4), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 4), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-np-a), var(--dist-cubes-np-a));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-np-a), var(--dist-cubes-np-a));
     opacity: 1;
   }
@@ -970,19 +754,7 @@
     transform: translate(var(--dist-cubes-nn-aa), var(--dist-cubes-nn-aa));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 5), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 5), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-nn-aa), var(--dist-cubes-nn-aa));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-nn-aa), var(--dist-cubes-nn-aa));
     opacity: 1;
   }
@@ -1018,19 +790,7 @@
     transform: translate(var(---aa), var(--dist-cubes-nn-aa));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 6), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 6), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(---aa), var(--dist-cubes-nn-aa));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(---aa), var(--dist-cubes-nn-aa));
     opacity: 1;
   }
@@ -1066,19 +826,7 @@
     transform: translate(var(--dist-cubes-np-aa), var(--dist-cubes-nn-aa));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 7), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 7), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-np-aa), var(--dist-cubes-nn-aa));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-np-aa), var(--dist-cubes-nn-aa));
     opacity: 1;
   }
@@ -1114,19 +862,7 @@
     transform: translate(var(--dist-cubes-nn-aa), var(---aa));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 8), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 8), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-nn-aa), var(---aa));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-nn-aa), var(---aa));
     opacity: 1;
   }
@@ -1162,19 +898,7 @@
     transform: translate(var(---aa), var(---aa));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 9), 0);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 9), 0);
-    opacity: 1;
-  }
   80% {
-    transform: translate(var(---aa), var(---aa));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(---aa), var(---aa));
     opacity: 1;
   }
@@ -1210,19 +934,7 @@
     transform: translate(var(--dist-cubes-np-aa), var(---aa));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 10), 0);
-    opacity: 0.1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 10), 0);
-    opacity: 0.1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-np-aa), var(---aa));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-np-aa), var(---aa));
     opacity: 1;
   }
@@ -1258,19 +970,7 @@
     transform: translate(var(--dist-cubes-nn-aa), var(--dist-cubes-np-aa));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 11), 0);
-    opacity: 0.1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 11), 0);
-    opacity: 0.1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-nn-aa), var(--dist-cubes-np-aa));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-nn-aa), var(--dist-cubes-np-aa));
     opacity: 1;
   }
@@ -1306,19 +1006,7 @@
     transform: translate(var(---aa), var(--dist-cubes-np-aa));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 12), 0);
-    opacity: 0.1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 12), 0);
-    opacity: 0.1;
-  }
   80% {
-    transform: translate(var(---aa), var(--dist-cubes-np-aa));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(---aa), var(--dist-cubes-np-aa));
     opacity: 1;
   }
@@ -1354,19 +1042,7 @@
     transform: translate(var(--dist-cubes-np-aa), var(--dist-cubes-np-aa));
     opacity: 1;
   }
-  70% {
-    transform: translate(calc(var(--cube-size) * 13), 0);
-    opacity: 0.1;
-  }
-  75% {
-    transform: translate(calc(var(--dist-cubes-np) * 13), 0);
-    opacity: 0.1;
-  }
   80% {
-    transform: translate(var(--dist-cubes-np-aa), var(--dist-cubes-np-aa));
-    opacity: 1;
-  }
-  90% {
     transform: translate(var(--dist-cubes-np-aa), var(--dist-cubes-np-aa));
     opacity: 1;
   }
