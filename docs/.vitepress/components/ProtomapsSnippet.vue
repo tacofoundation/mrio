@@ -41,13 +41,18 @@
   const codeSnippet1 = `
   import mrio
 
+  # Load dataset
+  ic = mrio.Collection("https://huggingface.co/datasets/tacofoundation/mrio-examples/resolve/main/sentinel2_4D.tif")
+
+  # Make a query
   tensor = ( 
-    mrio.Collection("gs://tacofoundation/demo.tif")
-        .select(["B01", "B02", "B03"])
-        .FilterDate("2021-01-05", "2021-03-10")
-        .FilterBounds(-76.1, 4.3, -76.1, 4.3)
+      ic.select(["B01", "B02", "B03"])
+        .FilterDate("2022-01-10", "2025-02-05")
+        .FilterBounds(-0.430863, 39.491523)
         .getInfo()
   )
+
+  tensor.shape
   `
 
   

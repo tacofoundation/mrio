@@ -139,8 +139,12 @@ div:has(> .my-protomaps-snippet) {
 
   /* alinear verticalmente al centro */
   justify-content: center;
-  height: 350px;
+  height: 500px;
   
+}
+
+.code-content pre {
+  height: 450px;
 }
 
 /* Cabecera del bloque de código, donde ponemos el botón */
@@ -319,7 +323,7 @@ div:has(> .my-protomaps-snippet) {
 
   /* El bloque de código baja debajo del texto */
   .code-content {
-    margin-top: 0; /* O ajusta a tu gusto */
+    margin-top: 0; /* O ajusta a tu gusto */  
   }
 
   .logo-wrapper {
