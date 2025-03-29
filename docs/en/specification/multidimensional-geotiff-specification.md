@@ -12,7 +12,6 @@ The following decisions have been considered in the development of mCOG:
 - A mCOG must be compliant with the [COG specification](https://docs.ogc.org/is/21-026/21-026.html).
 - A mCOG must be compliant with the [STAC datacube specification](https://github.com/stac-extensions/datacube).
 
-
 <figure style="display: flex; flex-direction: column; align-items: center">
   <img src="../../public/content-mcog.svg" alt="Band GIF" style="width: 60%">
 </figure>
@@ -25,13 +24,11 @@ The `MD_METADATA` tag is embedded within the `TIFFTAG_GDAL_METADATA` ASCII tag (
 
 | Field  | Type | Required | Details |
 |---|---|---|---|
-| md:pattern | string | Yes | A string defining the strategy to reshape the data into a 3D array (band, x, y). It is based on the Einstein-Inspired Notation for OPerationS, einops. The pattern is a space-separated list of dimension names, followed by an arrow `->`, and the new order of the dimensions. For example, `time band y x -> (time band) y x` rearranges the dimensions from `(time, band, y, x)` to `time×band y x`, where `time×band` is a new number of channels. As GeoTIFF define explicitly the `y` and `x` dimensions, the pattern **MUST** always include them. There is no restriction on the number of dimensions. Refer to the [einops paper](https://openreview.net/pdf?id=oapKSVM2bcj) for more details about the notation. |
-| md:coordinates | dictionary | Yes | A dictionary defining the coordinates to be combined with the pattern. The values **MUST** be lists of data types compliant with the [JSON standard](https://www.json.org/json-en.html). |
+| md:pattern | string | Yes | A string defining the strategy to reshape the data into a 3D array (band, x, y). It is based on the [Einstein-Inspired Notation for OPerationS](https://openreview.net/pdf?id=oapKSVM2bcj), einops. The pattern is a space-separated list of dimension names, followed by an arrow `->`, and the new order of the dimensions. For example, `time band y x -> (time band) y x` rearranges the dimensions from `(time, band, y, x)` to `time×band y x`, where `time×band` is a new number of channels. As GeoTIFF define explicitly the `y` and `x` dimensions, the pattern **MUST** always include them in the same order. There is no restriction on the number of dimensions. Refer to the [einops paper](https://openreview.net/pdf?id=oapKSVM2bcj) for more details about the notation. |
+| md:coordinates | dictionary | Yes | A dictionary-like container for coordinates, where key names **MUST** match those defined in `md:pattern`. The corresponding values **MUST**  always be lists. |
 | md:attributes | dictionary | No | A dictionary of additional metadata attributes to include in the file. It **MUST** comply with the [JSON standard](https://www.json.org/json-en.html). |
 | md:dimensions | list | No | A list of dimension names, where the order **MUST** align with the order specified in `md:pattern` before the arrow `->`. If not provided, it is automatically generated based on the `md:pattern` key. |
 | md:coordinates_len | dictionary | No | A dictionary defining the length of each dimension. The values **MUST** be integers. If omitted, it is automatically determined from the `md:coordinates` key. |
-
-It is created automatically when it is not provided.
 
 ## Example
 
@@ -62,7 +59,7 @@ The following is an example of the `MD_METADATA` tag in a mGeoTIFF file:
 
 ### Writing Data
 
-To simplify the explanation of how the I/O works, we will reference the Python API of [mrio](https://github.com/tacofoundation/mrio). When writing a mGeoTIFF file, users must define the `MD_METADATA` tag as a dictionary. This dictionary is validated using Python dataclass fields ([validation details](https://github.com/tacofoundation/mrio-python/blob/main/mrio/fields.py)) and then converted to a JSON string. Refer to the mrio [Python examples](https://https://tacofoundation.github.io/mrio/en/python/examples.html) for guidance on writing an mGeoTIFF file. 
+To simplify the explanation of how the I/O works, we will reference the current Python API of [mrio](https://github.com/tacofoundation/mrio). When writing a mGeoTIFF file, users must define the `MD_METADATA` tag as a dictionary. This dictionary is validated using Python dataclass fields ([validation details](https://github.com/tacofoundation/mrio-python/blob/main/mrio/fields.py)) and then converted to a JSON string. Refer to the mrio [Python examples](https://https://tacofoundation.github.io/mrio/en/python/examples.html) for guidance on writing an mGeoTIFF file. 
 
 <figure style="display: flex; flex-direction: column; align-items: center">
   <img src="../../public/write_mode.gif" alt="Band GIF" style="width: 70%">
@@ -125,7 +122,6 @@ Here, `band[x]`, `product[y]`, and `time[z]` correspond to the names specified i
   <figcaption style="text-align: center"><b>Figure 3: </b>Example of a mCOG displayed in QGIS</figcaption>
 </figure>
 
-
 ### Reading Data
 
 When reading a mGeoTIFF file, the `mrio` API reconstructs the original multidimensional array 
@@ -150,25 +146,25 @@ reshaped to restore its original dimensions. Partial reads are supported, by
 `md:attributes` field is also extracted. This enables the API to construct an `xarray.DataArray` 
 object with the associated attributes and coordinates. Numpy is supported too.
 
+### BLOCKZSIZE
+
+TODO
 
 ## FAQ
 
 ::: details Is it supported by QGIS? {close}
-If you open a mGeoTIFF file in QGIS, QGIS will display a `special` band names that
-are generated by `mrio`.
+If you open a mGeoTIFF file in QGIS, QGIS will display a `special` band name that
+are generated by `mrio`. Check BLOCKZSIZE for more details about problems with visualization.
 :::
 
 
 ::: details Is it supported by GDAL? {close}
-Not natively. However, as mCOG is a COG file, it can be read by GDAL. That is actually
-what Python API does. It uses GDAL to read the file and then it virtually reshapes the data 
-to the original shape.
+Not natively. **mrio** was developed to manage n-dimensional data within our deep learning pipelines. Depending on community feedback, we would be happy to develop a dedicated GDAL driver to enhance interoperability in other programming languages. However, since **mCOG** is a Cloud-Optimized GeoTIFF (COG), it can already be read by GDAL. In fact, that is actually what the current Python API does. It uses GDAL to read the file, and then it virtually reshapes the data to the original shape.
 :::
 
 
 ::: details Which programming languages are supported? {close}
-The `mrio` API is currently available in Python. However, we have plans to support R and Julia 
-in the future.
+The `mrio` API is currently available in Python.
 :::
 
 ::: details Can I use it with TensorFlow or PyTorch? {close}
