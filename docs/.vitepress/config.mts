@@ -111,7 +111,7 @@ function sidebarPython(): DefaultTheme.SidebarItem[] {
 function sidebarGuide(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: 'Introduction',
+      text: 'Formats',
       collapsed: false,
       items: [
         { text: 'GeoTIFF', link: 'geotiff' },
@@ -123,6 +123,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       text: 'Specification',
       collapsed: false,
       items: [
+        { text: 'Introduction', link: 'introduction' },
         { text: 'Multidimensional COG', link: 'multidimensional-geotiff-specification'},
         { text: 'Temporal COG', link: 'temporal-geotiff-specification'},
         // { text: 'Best Practices', link: 'best-practices' }
