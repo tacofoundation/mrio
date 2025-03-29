@@ -117,6 +117,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'GeoTIFF', link: 'geotiff' },
         { text: 'GDALGeoTIFF', link: 'gdal-geotiff' },
         { text: 'COG', link: 'cog' },
+        { text: 'Summary', link: 'summary' },
       ]
     },
     {
