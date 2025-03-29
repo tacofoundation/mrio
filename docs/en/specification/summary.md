@@ -8,14 +8,14 @@
 
 ### **Examine the diagram implementation in your preferred programming language:**
 
-- [Python implementation]()
+- [Python implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.py)
 
-- [R implementation]()
+- [R implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.R)
 
-- [Julia implementation]()
+- [Julia implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.jl)
 
-- [Rust implementation]()
+- [Rust implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.rs)
 
-- [C implementation]()
+- [C implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.c)
 
-- [Matlab implementation]()
+- [Matlab implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.mat)
