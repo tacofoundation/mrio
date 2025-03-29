@@ -14,8 +14,8 @@
 
 - [Julia implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.jl)
 
-- [Rust implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.rs)
+- [Rust implementation](https://github.com/andesdatacube/geotiff/blob/main/moon_rust/src/main.rs)
 
 - [C implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.c)
 
-- [Matlab implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.mat)
+- [Go implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.go)
