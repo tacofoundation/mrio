@@ -147,7 +147,7 @@ datum, and other geospatial attributes. Let's unpack how this system works.
 
 :::tip
 For a complete understanding of all GeoTIFF components, we highly recommend opening the summary diagram in another browser tab.
-Full diagrama [here](https://tacofoundation.github.io/mrio/assets/general_geotiff.Cv8PYgH1.svg)
+Full diagram [here](https://tacofoundation.github.io/mrio/assets/general_geotiff.Cv8PYgH1.svg)
 :::
 
 
