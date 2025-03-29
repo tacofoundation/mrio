@@ -1,7 +1,5 @@
 import DefaultTheme from 'vitepress/theme'
 import './custom.css'
-import './zoom.js';
-
 
 // Components
 import ProtomapsSnippet from '../components/ProtomapsSnippet.vue'
