@@ -85,8 +85,7 @@ In GDAL, overviews (or pyramids) are precomputed lower-resolution layers of a ra
   <figcaption style="text-align: center"><b>Figure 2:</b> Overview representation. Overviews are stored in a separate IFD. Image obtained from the Kitware post about [COG creation](https://www.kitware.com/deciphering-cloud-optimized-geotiffs/).</figcaption>
 </figure>
 
-The [`gdaladdo`](https://gdal.org/en/stable/programs/gdaladdo.html) command-line tool enables users to specify resampling methods (e.g., nearest neighbour, cubic) and overview levels (e.g., powers of 2) tailored to their needs. For example, running `gdaladdo -r average -levels 4 input.tif` creates four overview layers using averaging resampling. This is critical for large GeoTIFFs visualization and analysis, as overviews allow clients to fetch smaller datasets for zoomed-out views without processing the full-resolution file. The gdaladdo tool integrates seamlessly with GDAL’s API, which programmatically supports overview creation via the `BuildOverviews()`(https://gdal.org/en/stable/doxygen/classGDALDataset.html) method in the GDALDataset class. Additionally, GDAL’s support for external overviews (e.g., .ovr files) avoids modifying the original file. Check the [overview creation](https://gdal.org/en/stable/drivers/raster/gtiff.html#overviews) documentation for more details.
-
+The [`gdaladdo`](https://gdal.org/en/stable/programs/gdaladdo.html) command-line tool enables users to specify resampling methods (e.g., nearest neighbour, cubic) and overview levels (e.g., powers of 2) tailored to their needs. For example, running `gdaladdo -r average -levels 4 input.tif` creates four overview layers using averaging resampling. This is critical for large GeoTIFFs visualization and analysis, as overviews allow clients to fetch smaller datasets for zoomed-out views without processing the full-resolution file. Additionally, GDAL’s support for external overviews (e.g., .ovr files) avoids modifying the original file. Check the [overview creation](https://gdal.org/en/stable/drivers/raster/gtiff.html#overviews) documentation for more details.
 
 ### 🔀 INTERLEAVE Strategies
 
@@ -104,7 +103,7 @@ The interleave configuration is a renaming of the `PLANARCONFIG_CONTIG` tag in t
 </figure>
 
 ::: tip
-**Interleave configuration** determines how bytes are ordered. Depending of the use case, one configuration may be more efficient than the other. For example, if you are working with single-band operations, the **BAND** configuration may be more efficient because it allows you to read the entire band without having to skip bytes. On the other hand, the **PIXEL** configuration may be more efficient when working with multiple bands because it allows you to read all bands for a single pixel without having to skip bytes.
+**Interleave configuration** determines how bytes are ordered. Depending of the use case, one configuration may be more efficient than the other. For example, if you are working with single-band operations, the **BAND** configuration may be more efficient because it allows you to read the entire band without having to skip bytes. On the other hand, the **PIXEL** configuration may be more efficient when working with multiple bands because it allows you to read all bands for a single pixel/chunk without having to skip bytes.
 :::
 
 ### 🗜️ COMPRESS
@@ -116,17 +115,17 @@ Compression is particularly useful for satellite imagery, which often contains s
 ### How do COMPRESS, INTERLEAVE, and TILE Interact?
 
 Understanding how these parameters work together is crucial for optimal raster performance. Let's analyze their interplay
-by a simple example. We will analyze a **900x900px 2-band image with `TILED=YES` and `BLOCKXSIZE=300` and `BLOCKYSIZE=300`**. We will explore five scenarios:
+with a simple example. We will analyze a **900x900px 2-band image with `TILED=YES` and `BLOCKXSIZE=300` and `BLOCKYSIZE=300`**. We will explore five reading scenarios:
 
 #### Case 1: COMPRESS=NONE, TILE=YES
 
-When compression is disabled, GDAL calculates the file size in advance before writing the image. The INTERLEAVE parameter controls how pixel data is arranged while setting `TILED=YES` divides the image into 300x300 pixel blocks. Although the image is tiled, the access remains pixel-level, improving random access performance.
+When compression is disabled, GDAL can calculate the file size in advance. The INTERLEAVE parameter controls how pixel data is arranged while setting `TILED=YES` divides the image into 300x300 pixel blocks. Although the image is tiled, the access remains pixel-level, improving random access performance.
 
 #### Case 2: COMPRESS != NONE, INTERLEAVE=PIXEL, TILE=YES
 
 The `TILED=YES` option divides the image into 300x300 pixel blocks, while the pixel-interleaved layout arranges tiles sequentially 
 following the band order: `[R1, G1, B1, R2, G2, B2...]`.  Importantly, compression is applied at the tile level, not per pixel.
-Each tile acts as a self-contained compression unit, structured as a 2x300x300 pixel block, **think of the tile itself as the foundational unit for compression, rather than individual pixels**. This data structure is highly efficient for pixel- or region-specific operations involving all bands simultaneously, as all band values for a single tile are stored contiguously. In the example image, this results in **9-byte blocks** for the 2-band image.
+Each tile acts as a self-contained compression unit, structured as a 2x300x300 block, **think of the tile itself as the foundational unit for compression, rather than individual pixels**. This data structure is highly efficient for region-specific operations involving all bands simultaneously, as all band values for a single tile are stored contiguously. In the example image, this results in **9-byte blocks** for the 2-band image.
 
 <figure style="display: flex; flex-direction: column; align-items: center">
   <img src="../../public/pixel.gif" alt="Pixel GIF" style="width: 100%">
@@ -136,7 +135,7 @@ Each tile acts as a self-contained compression unit, structured as a 2x300x300 p
 
 #### Case 3: COMPRESS != NONE, INTERLEAVE=BAND, TILE=YES
 
-The `TILED=YES` option divides the image into 300x300 pixel blocks, while the band-interleaved groups all values for a single band sequentially: `[R1, R2..., G1, G2...]`. Compression is applied to 1x300x300 band-specific blocks independently. This structure excels for band-specific operations like NDVI calculations, where only the red and NIR bands need to be accessed without decompressing unrelated data, significantly reducing processing time and memory usage. However, it is inefficient for pixel- or region-specific workflows, as accessing complete pixel data requires decompressing each band separately. In web environments, the non-contiguous byte storage of bands necessitates multiple GET range requests to fetch dispersed data. For the example image, this generates **18-byte blocks** for the 2-band image.
+The `TILED=YES` option divides the image into 300x300 pixel blocks, while the band-interleaved groups all values for a single band sequentially: `[R1, R2..., G1, G2...]`. Compression is applied to 1x300x300 band-specific blocks independently. This structure excels for band-specific operations like NDVI calculations, where only the red and NIR bands need to be accessed without decompressing unrelated data, significantly reducing processing time and memory usage. However, it is inefficient for region-specific workflows that need all bands, as accessing complete pixel data requires decompressing each band separately. In web environments, the non-contiguous byte storage of bands necessitates multiple GET range requests to fetch dispersed data. For the example image, this generates **18-byte blocks** for the 2-band image.
 
 <figure style="display: flex; flex-direction: column; align-items: center">
   <img src="../../public/band.gif" alt="Band GIF" style="width: 100%">
