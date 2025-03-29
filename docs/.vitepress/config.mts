@@ -91,7 +91,6 @@ function sidebarPython(): DefaultTheme.SidebarItem[] {
         { text: 'mrio', link: 'mrio' },
         { text: 'Validation', link: 'validation' },
         { text: 'Rasterio API', link: 'rasterio_api' },
-        { text: 'Earth Engine API', link: 'earth-engine-api' },
         { text: 'Temporal API', link: 'temporal_utils' },
         { text: 'Attributes', link: 'attributes' },
         { text: 'Examples', link: 'examples' },
