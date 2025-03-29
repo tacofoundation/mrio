@@ -4,3 +4,18 @@
   </div>
   <figcaption style="text-align: center"><b>Figure 1: </b>Diagram illustrating the structure of a GeoTIFF file format.</figcaption>
 </figure>
+
+
+### **Examine the diagram implementation in your preferred programming language:**
+
+- [Python implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.py)
+
+- [R implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.R)
+
+- [Julia implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.jl)
+
+- [Rust implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.rs)
+
+- [C implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.c)
+
+- [Matlab implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.mat)
