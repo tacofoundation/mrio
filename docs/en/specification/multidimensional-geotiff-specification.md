@@ -3,9 +3,15 @@
 
 ## Overview
 
-While multidimensional array formats such as NetCDF, HDF5, and Zarr are currently supported by many GIS software and GDAL, their general-purpose design poses challenges for geospatial interoperability. These formats do not inherently default to explicit metadata conventions, such as coordinate reference systems, spatial dimensions, overviews or temporal attributes. As a result, users often need to manually configure spatial parameters during data ingestion, leading to inconsistent interpretations, projection mismatches, and additional preprocessing steps that complicate geospatial workflows.
+Unlike GeoTIFF, which enforces strict metadata standards, traditional multidimensional formats typically rely on the flexible [CF metadata conventions](https://cfconventions.org/). While this flexibility offers broad applicability, it also leads to inconsistent implementations across software platforms and public datasets. Probably, the major concern is the lack of standardization for [CRS information](https://github.com/zarr-developers/geozarr-spec/issues/53); although CF conventions allow the inclusion of CRS details, they do not enforce a uniform format. Similar issues arise with other critical metadata components, such as the definition of temporal attributes and data overviews. Consequently, users often need to determine the appropriate structure manually, which can result in inconsistent dataset interpretations and additional preprocessing steps that further complicate geospatial workflows.
 
-The Multidimensional COG (mCOG) specification extends the traditional GeoTIFF format to support N-dimensional arrays. **Our core principle is that everything should be explicit by default**. It maintains the simplicity and compatibility of COG/GeoTIFF, offers fast access and the ability to be opened by any GIS software or library that supports the GDALGeoTIFF format.
+To address these challenges, the Multidimensional COG (mCOG) specification extends the traditional GeoTIFF format to support N-dimensional arrays. Our core principle is that everything should be explicit by default. The mCOG format maintains the simplicity and compatibility of COG/GeoTIFF, offers fast and partial data access, and ensures compatibility with any GIS software or library that supports the GDALGeoTIFF format.
+
+The following decisions have been considered in the development of mCOG:
+
+- A mCOG must be compliant with the [COG specification](https://docs.ogc.org/is/21-026/21-026.html).
+- A mCOG must be compliant with the [STAC datacube specification](https://github.com/stac-extensions/datacube).
+
 
 <figure style="display: flex; flex-direction: column; align-items: center">
   <img src="../../public/content-mcog.svg" alt="Band GIF" style="width: 60%">
@@ -13,7 +19,7 @@ The Multidimensional COG (mCOG) specification extends the traditional GeoTIFF fo
 
 ## File format details
 
-This is the version `0.0.1` of the mCOG specification. From a high-level perspective, the main difference between a [traditional COG](https://docs.ogc.org/is/19-008r4/19-008r4.html) and an mCOG is the addition of a TAG named **`MD_METADATA`** that contains the metadata of the multidimensional array. With this metadata, client libraries can reshape the data from a 3D array (band, x, y) structure to an N-dimensional array.
+This is the version `0.1.0` of the mCOG specification. From a high-level perspective, the main difference between a [traditional COG](https://docs.ogc.org/is/19-008r4/19-008r4.html) and an mCOG is the addition of a TAG named **`MD_METADATA`** that contains the metadata of the multidimensional array. With this metadata, client libraries can reshape the data from a 3D array (band, x, y) structure to an N-dimensional array.
 
 The `MD_METADATA` tag is embedded within the `TIFFTAG_GDAL_METADATA` ASCII tag (code 42112), as recommended by the [GDAL documentation](https://gdal.org/en/stable/drivers/raster/gtiff.html#metadata) for handling non-standard metadata. This approach ensures compatibility with the GeoTIFF specification while enabling support for multidimensional arrays. The table below highlights the mandatory and optional fields within the `MD_METADATA` JSON structure:
 
