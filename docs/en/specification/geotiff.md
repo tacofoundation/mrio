@@ -22,11 +22,10 @@ Our expertise is based on reviewing [GDAL GeoTIFF implementation](https://github
 
 ## What is TIFF?
 
-Many of us think of TIFF as just another image format alongside PNG or JPEG, and we held this misconception ourselves for years. However, TIFF is actually far more sophisticated. It is closer in concept to [STAC](https://stacspec.org/en), [HDF5](https://www.hdfgroup.org/solutions/hdf5/) 
-or [Zarr](https://zarr.dev/), serving as a container that can house multiple images, each with its own rich set of metadata, i.e., different sizes, resolutions, data types, and more. This versatility sets the stage for GeoTIFF, which is essentially TIFF's spatially-aware cousin. A GeoTIFF builds upon TIFF's flexible foundation by incorporating specialized geographic metadata (as we will see below). At a high level, a TIFF/GeoTIFF file consists of three main components:
+Many of us think of TIFF as just another image format alongside PNG or JPEG, and we held this misconception ourselves for years. However, TIFF is actually far more sophisticated. It is closer in concept to [STAC](https://stacspec.org/en), [HDF5](https://www.hdfgroup.org/solutions/hdf5/) or [Zarr](https://zarr.dev/), serving as a container that can house multiple images, each with its own rich set of metadata, i.e., different sizes, resolutions, data types, and more. This versatility paves the way for GeoTIFF, which is essentially a spatially aware version of TIFF. At a high level, a TIFF/GeoTIFF file consists of three main components:
 
 - **Image File Header (IFH)**
-- **Image File Directory (IFD)** - there can be multiple IFDs in a TIFF file.
+- **Image File Directory (IFD)** - There can be multiple IFDs in a TIFF file.
 - **Image Data (ID)** - one for each IFD.
 
 <figure style="display: flex; flex-direction: column; align-items: center">
@@ -34,7 +33,9 @@ or [Zarr](https://zarr.dev/), serving as a container that can house multiple ima
   <figcaption style="text-align: center"><b>Figure 1: </b>GeoTIFF file structure considering a single IFD</figcaption>
 </figure>
 
-
+:::info
+The standard TIFF format and BigTIFF primarily differ in their handling of offsets (pointers to data locations), which significantly influences their respective file size limits. Standard TIFF employs 32-bit offsets (4 bytes), restricting maximum file sizes to 4GB. On the other hand, BigTIFF utilizes 64-bit offsets (8 bytes), allowing for potentially enormous file sizes of up to 16 exabytes.
+:::
 
 ### **Image File Header (IFH)**
 
@@ -132,10 +133,10 @@ The same information in JSON would look like:
 }
 ```
 
-However, the binary format uses just 12 bytes compared to JSON's 58 bytes. It is nearly 5 times more efficient. This is the power of binary formats! You lose readability but gain efficiency. I think we are ready to dive into the GeoTIFF file.
+However, the binary format uses just 12 bytes compared to JSON's 58 bytes. It is nearly 5 times more efficient. This is the power of binary formats! You lose readability but gain efficiency. Consider that JSON was not available when GeoTIFF was proposed. I think we are ready to dive into the GeoTIFF file.
 
 ::: info
-Every IFD is a set of ``Directory Entries``, which are key-value pairs. Unlike JSON where key-value pairs can vary in size, 
+Every IFD is a set of tags or ``Directory Entries``, which are key-value pairs. Unlike JSON where key-value pairs can vary in size, 
 TIFF's Directory Entries have a fixed size of 12 bytes each, making them more efficient to parse and process.
 :::
 
@@ -144,11 +145,13 @@ TIFF's Directory Entries have a fixed size of 12 bytes each, making them more ef
 What truly makes a TIFF a GeoTIFF are the **specialized tags** that define the coordinate system, projection, 
 datum, and other geospatial attributes. Let's unpack how this system works.
 
-### The Core Geographic Tags
-
-:::info
-Visit the [GeoTIFF specification](https://www.ogc.org/publications/standards/geotiff) for a complete list of tags.
+:::tip
+For a complete understanding of all GeoTIFF components, we highly recommend opening the summary diagram in another browser tab.
+Full diagrama [here](https://tacofoundation.github.io/mrio/assets/general_geotiff.Cv8PYgH1.svg)
 :::
+
+
+### The Core Geographic Tags
 
 At its heart, a GeoTIFF file relies on four fundamental tags to store geographic information:
 
@@ -161,9 +164,14 @@ At its heart, a GeoTIFF file relies on four fundamental tags to store geographic
 
 <p>You can also use ModelTiepointTag + ModelPixelScaleTag instead of ModelTransformationTag, but for this article, we just focus on ModelTransformationTag.</p>
 
+:::info
+Visit the [GeoTIFF specification](https://www.ogc.org/publications/standards/geotiff) for a complete list of tags. 
+:::
+
+
 #### The GeoKeyDirectoryTag: A Tag of Tags
 
-The GeoKeyDirectoryTag functions similarly to a nested dictionary in Python, a tag that houses other tags, called **GeoKeys**, as defined by the GeoTIFF specification. This hierarchical design ensures GeoTIFF metadata IDs remain distinct from standard TIFF ID tags. Every GeoKeyDirectoryTag begins with the same header (H) structure:
+The GeoKeyDirectoryTag functions similarly to a nested dictionary in Python, a tag that houses other tags. These nested tags are referred to as **GeoKeys**, as defined by the GeoTIFF specification. This hierarchical design ensures GeoTIFF metadata IDs remain distinct from standard TIFF ID tags. Every GeoKeyDirectoryTag begins with the same header (H) structure:
 
 1. **KeyDirectoryVersion (2 bytes)**
     - Defines the structure format of the directory. The current version is 1.
