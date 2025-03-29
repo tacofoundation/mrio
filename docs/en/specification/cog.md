@@ -125,9 +125,9 @@ The `INTERLEAVE=TILE` option organizes data into chunks at the band level (`1 x 
 For example, consider a hyperspectral image with 200 bands where you need to access the first 10 bands for a specific pixel/region of interest. If the image uses pixel interleaving (`C x H x W`), a single range request can retrieve all the tile data. However, because the data is compressed, you would need to download all bands, decompress them, extract the desired bands, and discard the rest. Conversely, with band interleaving (`1 x H x W`), the data for each band is stored separately, requiring 10 separate range requests to access the first 10 bands, as the data is not contiguous. Using `INTERLEAVE=TILE` (also `1 x H x W`), the data for these bands **remains contiguous within the chunks**, allowing you to make a single range request to retrieve only the bands you need.
 
 
-:: info
+::: info
 The main drawback of using `INTERLEAVE=TILE` is that the final file size will be larger compared to using `INTERLEAVE=PIXEL`. This is because compression is applied at the band level (`1 x H x W`) rather than the pixel level (`C x H x W`). The difference in file size depends on the correlation between bands and the compression method used.
-::
+:::
 
 ### Optimized Byte Layout
 
