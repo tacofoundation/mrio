@@ -1,3 +1,5 @@
+# The GEOTIFF format
+
 <figure>
   <div class="easyzoom easyzoom--overlay">
     <img src="../../public/general_geotiff.svg" alt="GeoTIFF file structure" style="width: 100%">
@@ -6,7 +8,7 @@
 </figure>
 
 
-### **Examine the diagram implementation in your preferred programming language:**
+### **Analyze a GeoTIFF byte by byte in your preferred programming language**
 
 - [Python implementation](https://github.com/andesdatacube/geotiff/blob/main/moon.py)
 
