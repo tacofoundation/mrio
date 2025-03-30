@@ -36,24 +36,6 @@ The following is an example of the `MD_METADATA` tag in a mGeoTIFF file:
 {
   "md:pattern": "time band y x -> (time band) y x",
   "md:coordinates": {
-    "x": {
-        "type": "spatial",
-        "axis": "x",
-        "extent": [
-          -122.59750209,
-          -122.2880486
-        ],
-        "reference_system": 4326
-    },
-    "y": {
-        "type": "spatial",
-        "axis": "y",
-        "extent": [
-          37.48803556,
-          37.613537207
-        ],
-        "reference_system": 4326
-    },
     "time": {
         "type": "temporal",
         "values": [
@@ -68,6 +50,24 @@ The following is an example of the `MD_METADATA` tag in a mGeoTIFF file:
           "blue"
         ]
     }
+    "y": {
+        "type": "spatial",
+        "axis": "y",
+        "extent": [
+          37.48803556,
+          37.613537207
+        ],
+        "reference_system": 4326
+    },
+    "x": {
+        "type": "spatial",
+        "axis": "x",
+        "extent": [
+          -122.59750209,
+          -122.2880486
+        ],
+        "reference_system": 4326
+    },
   },  
   "md:attributes": {
     "title": "Multidimensional GeoTIFF Example",
