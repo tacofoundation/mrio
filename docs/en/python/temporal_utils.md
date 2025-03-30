@@ -18,7 +18,7 @@ mrio.temporal.unstack(input_file: PathLike, output_dir: PathLike)
 
 ### Returns
 
-A list of unstacked files. The files names are those specified in the `md:id` metadata attribute of the input file.
+A list of unstacked files. The file names are those specified in the `id` coordinate values.
 
 
 ### Example
@@ -38,15 +38,16 @@ mrio.temporal.unstack(input_file, output_dir)
 Stacks multiple COG files into a single temporal COG file.
 
 ```python
-mrio.temporal.stack(files: List[PathLike], output_file: PathLike, files_dates: List[datetime.datetime], files_ids: Optional[List[str]] = None) -> Path
+mrio.temporal.stack(files: List[PathLike], output_file: PathLike, time_starts: List[datetime.datetime], time_ends: Optional[List[datetime.datetime]] = None, ids: Optional[List[str]] = None) -> Path
 ```
 
 ### Parameters
 
 - `files` (List[PathLike]): List of paths to the input COG files.
 - `output_file` (PathLike): Path to the output Temporal COG file.
-- `files_dates` (List[datetime.datetime]): List of datetime objects representing the dates of the input files.
-- `files_ids` (Optional[List[str]]): List of strings representing the ids of the input files. If not provided, the filenames will be used.
+- `time_starts` (List[datetime.datetime]): List of datetime objects representing the `time_start` of the input files.
+- `time_ends` (Optional[List[datetime.datetime]]): List of datetime objects representing the `time_end` of the input files.
+- `ids` (Optional[List[str]]): List of strings representing the ids of the input files. If not provided, the filenames will be used.
 
 ### Returns
 
@@ -60,10 +61,10 @@ from datetime import datetime
 
 files = ['path/to/file1.tif', 'path/to/file2.tif']
 output_file = 'path/to/output.tif'
-files_dates = [datetime(2020, 1, 1), datetime(2020, 1, 2)]
+time_starts = [datetime(2020, 1, 1), datetime(2020, 1, 2)]
 
 # The files_ids parameter is optional
-mrio.temporal.stack(files, output_file, files_dates)
+mrio.temporal.stack(files, output_file, time_starts)
 
 # >>> 'path/to/output.tif'
 ```
