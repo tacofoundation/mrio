@@ -220,32 +220,32 @@ instance, [Zarr V3](https://zarr-specs.readthedocs.io/en/latest/v3/data-types.ht
 `under construction` at the time of writing, despite having been released months ago. This issue is
 particularly critical given that Zarr's official implementation is written in Python, as
 opposed to the cross-platform C implementations found in formats such as HDF or GeoTIFF (GDAL). The
-direct consequence is a lack of interoperability **even within software that implements the Zarr format**.
-From my perspective, Zarr cannot be considered a viable option for production until a clear plan for a
-cross-platform implementation is established. Currently, there are efforts to support Zarr in GDAL, but
-it seems that its community is shifting towards Rust, specifically with the Icechunk project.
+direct consequence is a lack of interoperability between the software that implements the Zarr format.
+From our perspective, Zarr cannot be considered a viable option for production until a clear plan for a
+cross-platform implementation is established. Currently, there are efforts to support
+[Zarr in GDAL](https://gdal.org/en/stable/drivers/raster/zarr.html), but it seems that its community is
+shifting towards Rust, specifically with the [Icechunk project](https://icechunk.io/en/latest/).
 
 
 ## Final thoughts
 
 As you can see, there is no perfect format for n-dimensional data. With mCOG, we aim to
-provide a simple, stable, and explicit format for n-dimensional arrays. By building on top of the
+provide a simple, stable, and spatially explicit format for n-dimensional arrays. By building on top of the
 COG layout. However, there are some drawbacks to this approach that data providers should be aware of:
 
-1. **Hard to apply update operations**, especially when user-defined overviews are involved. While not
-technically impossible, implementing streaming in mCOG is more complex and not as efficient compared to
-Zarr's chunked design, where this process is quite straightforward.
+1. **Hard to apply streaming operations**, especially when data overviews are involved. While not technically
+impossible, implementing streaming in mCOG is more complex and not as efficient compared to Zarr's chunked
+design, where this process is quite straightforward.
 
-2. **Limited support for complex nested data structures**. mCOG does not support complex 
+3. **Limited support for complex nested data structures**. mCOG does not support complex 
 nested data structures, like a list of n-dimensional variables. It is designed to handle one
 coordinate reference system (CRS) and one transform per file.
 
-3. **Fixed Chunking Schema**: In mCOG, the chunking schema is dimensionally fixed. This means that
+4. **Fixed Chunking Schema**: In mCOG, the chunking schema is dimensionally fixed. This means that
 for a 4D array, the chunking structure can only be defined as:
-- `(1 × BLOCKXSIZE × BLOCKYSIZE)` when interleaves is band or tile,  
-- `(C × BLOCKXSIZE × BLOCKYSIZE)` when interleaves is by pixel, or  
-- `(C' × BLOCKXSIZE' × BLOCKYSIZE')` when `md:blockzsize` is different from 1.  
-
+  - `(1 × BLOCKXSIZE × BLOCKYSIZE)` when interleaves is band or tile,  
+  - `(C × BLOCKXSIZE × BLOCKYSIZE)` when interleaves is by pixel, or  
+  - `(C' × BLOCKXSIZE' × BLOCKYSIZE')` when `md:blockzsize` is different from 1.  
 Unlike Zarr or NetCDF5, which naturally support flexible chunking, this constraint in mCOG can lead to 
 larger file sizes, particularly when handling highly redundant data (e.g., climate datasets).
 
