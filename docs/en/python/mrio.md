@@ -1,8 +1,16 @@
 # What is mrio?
 
+::: warning
+This is a proof-of-concept library, and many aspects, including the library itself and 
+the tCOG and mCOG specifications, are expected to change based on feedback. It is not 
+recommended for production use. If the community finds it valuable, we will focus on
+delivering a cross-platform implementation via a [C++ GDAL driver](https://gdal.org/en/stable/api/gdaldriver_cpp.html).
+:::
+
 ## Overview
 
-`mrio` is a Python package that extends rasterio to handle multi-dimensional and temporal COG files with a familiar, intuitive syntax. Built for Earth Observation people who need robust and **explicit** handling of n-dimensional data while maintaining a straightforward and efficient workflow.
+`mrio` is a Python package that extends [rasterio](https://rasterio.readthedocs.io/en/stable/) to handle [mCOG](https://tacofoundation.github.io/mrio/en/specification/multidimensional-geotiff-specification.html) and [tCOG](https://tacofoundation.github.io/mrio/en/specification/temporal-geotiff-specification.html) files with a familiar, 
+intuitive syntax.
 
 ::: info
 The `mrio.open` function currently does not support all the features available
