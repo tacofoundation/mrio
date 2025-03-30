@@ -4,7 +4,7 @@ For users who want an easy way to stack/unstack tCOG, this module provides a set
 
 ## `mrio.temporal.unstack`
 
-Unstacks a temporal COG file into multiple COG files, one 
+Unstacks a tCOG file into multiple COG files, one 
 for each time step.
 
 ```python
@@ -35,7 +35,7 @@ mrio.temporal.unstack(input_file, output_dir)
 
 ## `mrio.temporal.stack`
 
-Stacks multiple COG files into a single temporal COG file.
+Stacks multiple COG files into a single tCOG file.
 
 ```python
 mrio.temporal.stack(files: List[PathLike], output_file: PathLike, time_starts: List[datetime.datetime], time_ends: Optional[List[datetime.datetime]] = None, ids: Optional[List[str]] = None) -> Path
