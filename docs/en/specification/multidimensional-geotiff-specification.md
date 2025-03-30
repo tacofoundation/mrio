@@ -24,10 +24,8 @@ The `MD_METADATA` tag is embedded within the `TIFFTAG_GDAL_METADATA` ASCII tag (
 | Field  | Type | Required | Details |
 |---|---|---|---|
 | md:pattern | string | Yes | A string defining the strategy to reshape the data into a 3D array (band, x, y). It is based on the [Einstein-Inspired Notation for OPerationS](https://openreview.net/pdf?id=oapKSVM2bcj), einops. The pattern is a space-separated list of dimension names, followed by an arrow `->`, and the new order of the dimensions. For example, `time band y x -> (time band) y x` rearranges the dimensions from `(time, band, y, x)` to `time×band y x`, where `time×band` is a new number of channels. As GeoTIFF define explicitly the `y` and `x` dimensions, the pattern **MUST** always include them in the same order. There are no restrictions on the number of input dimensions. However, reshape operations that modify `y` or `x` are not allowed, and the resulting pattern must always yield exactly three dimensions after the arrow. Refer to the [einops paper](https://openreview.net/pdf?id=oapKSVM2bcj) for more details about the notation. |
-| md:coordinates | dictionary | Yes | A dictionary-like container for coordinates, where key names **MUST** match those defined in `md:pattern`. The corresponding values **MUST**  always be lists. |
+| md:coordinates | Map<string, [Dimension Object](https://github.com/stac-extensions/datacube?tab=readme-ov-file#dimension-object)> | Yes | Uniquely named dimensions of the datacube. Based on the datacube STAC extension proposed by [Matthias Mohr](https://github.com/stac-extensions/datacube). |
 | md:attributes | dictionary | No | A dictionary of additional metadata attributes to include in the file. It **MUST** comply with the [JSON standard](https://www.json.org/json-en.html). |
-| md:dimensions | list | No | A list of dimension names, where the order **MUST** align with the order specified in `md:pattern` before the arrow `->`. If not provided, it is automatically generated based on the `md:pattern` key. |
-| md:coordinates_len | dictionary | No | A dictionary defining the length of each dimension. The values **MUST** be integers. If omitted, it is automatically determined from the `md:coordinates` key. |
 | md:blockzsize | integer | No | A new `create option` parameter that defines the block size for the bands in a GeoTIFF. It must be set to either 1 or an integer value that is divisible by the number of bands after rearranging, with the default value being 1. This setting allows for greater control over how data is segmented within the file, which is important for optimizing access patterns and performance. Additionally, the division between `md:blockzsize` and the scale **MUST** yield a terminating number, ensuring that the scaling process does not result in non-terminating decimals. |
 
 ## Example
@@ -38,20 +36,43 @@ The following is an example of the `MD_METADATA` tag in a mGeoTIFF file:
 {
   "md:pattern": "time band y x -> (time band) y x",
   "md:coordinates": {
-    "time": ["2021-01-01", "2021-01-02", "2021-01-03"],
-    "band": ["B01", "B02", "B03"]
-  },
-  "md:dimensions": ["time", "band", "y", "x"],
+    "x": {
+        "type": "spatial",
+        "axis": "x",
+        "extent": [
+          -122.59750209,
+          -122.2880486
+        ],
+        "reference_system": 4326
+    },
+    "y": {
+        "type": "spatial",
+        "axis": "y",
+        "extent": [
+          37.48803556,
+          37.613537207
+        ],
+        "reference_system": 4326
+    },
+    "time": {
+        "type": "temporal",
+        "values": [
+          "2016-05-03T13:21:30.040Z"
+        ]
+    },
+    "band": {
+        "type": "bands",
+        "values": [
+          "red",
+          "green",
+          "blue"
+        ]
+    }
+  },  
   "md:attributes": {
     "title": "Multidimensional GeoTIFF Example",
     "description": "This is a toy example of a Multidimensional GeoTIFF file."
-  },
-    "md:coordinates_len": {
-        "time": 3,
-        "band": 3,
-        "lat": 100,
-        "lon": 100
-    }
+  }
 }
 ```
 
