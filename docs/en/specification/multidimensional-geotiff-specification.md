@@ -12,7 +12,7 @@ The following decisions have been considered in the development of mCOG:
 - An mCOG must also comply with the [STAC datacube specification](https://github.com/stac-extensions/datacube), ensuring a single, standardized method for defining time and additional dimensions. Multiple variables are not supported.
 
 <figure style="display: flex; flex-direction: column; align-items: center">
-  <img src="../../public/content-mcog.svg" alt="Band GIF" style="width: 60%">
+  <img src="../../public/content-mcog.svg" alt="Band GIF" style="width: 40%">
 </figure>
 
 ## File format details
@@ -194,8 +194,11 @@ each n-dimensional chunk in a separate IFD. With some effort, this approach coul
 achieve efficiency comparable to other n-dimensional array formats. However, by choosing 
 the COG layout **all the necessary tools already exist**. GDAL is highly optimized for 
 working with COG files and is supported by a large, active community of experts continuously 
-improving and maintaining it (This is more important than anything!). Back to the example of an illusional n-D chunked TIFF format, it would not only require significant effort to develop but also writing a lot of code to ensure compatibility with other software (i.e. QGIS). In practice, the success of a format often depends 
-more on the people supporting it than on whether a format is theoretically better than another.
+improving and maintaining it (This is more important than anything!). Back to the example of an
+illusional n-D chunked TIFF format, it would not only require significant effort to develop but
+also writing a lot of code to ensure compatibility with other software (i.e. QGIS). In practice,
+the success of a format often depends more on the people supporting it than on whether a format
+is theoretically better than another.
 
 2. **Stability and Maturity**: GeoTIFF, in particular, has benefited from decades of development 
 and refinement, making it a mature and highly stable format. This stability and maturity are key 
@@ -207,33 +210,47 @@ give you an idea of the complexity. Breaking changes between minor versions are 
 can disrupt compatibility for software or formats built on top of it, such as NetCDF. This complexity
 makes HDF5 less interoperable, specifically for less experienced users.
 
-4. **Why not just Zarr?**:
+3. **Why not just Zarr?**: Zarr is another general-purpose format that is relatively new and highly
+flexible, with a specification of fewer than 10 pages. In Zarr, almost everything, except for the
+datatype, compression, shape, and chunk size, is implicit. As of this writing, there is no established
+standard within Zarr comparable to GeoTIFF. Rather than being a fully self-contained file format, Zarr
+functions more as a convention for organizing n-dimensional arrays within a folder structure. One of our
+main concerns when adopting Zarr is that the main changes are made without proper documentation. For
+instance, [Zarr V3](https://zarr-specs.readthedocs.io/en/latest/v3/data-types.html) is still
+`under construction` at the time of writing, despite having been released months ago. This issue is
+particularly critical given that Zarr's official implementation is written in Python, as
+opposed to the cross-platform C implementations found in formats such as HDF or GeoTIFF (GDAL). The
+direct consequence is a lack of interoperability **even within software that implements the Zarr format**.
+From my perspective, Zarr cannot be considered a viable option for production until a clear plan for a
+cross-platform implementation is established. Currently, there are efforts to support Zarr in GDAL, but
+it seems that its community is shifting towards Rust, specifically with the Icechunk project.
 
-Zarr is another general-purpose format; it is relatively new and highly flexible, with a 
-specification of fewer than 10 pages. In Zarr, almost everything except for the datatype,
-compression, shape, and chunk size is implicit. A la hora de escribir esto no existe ningun
-standard similar a GeoTIFF in Zarr. Instead of being a fully self-contained file format, Zarr
-operates more as a convention for organizing n-dimensional arrays in a folder structure.
 
-One of our main concerns with Zarr is that many changes may be made without proper documentation. This issue is particularly critical given that Zarr's primary official implementation is written in Python, as opposed to the cross-platform C implementations found in formats such as HDF or GeoTIFF (GDAL). The direct consequence is a lack of interoperability even within software that implements the same format. From my perspective, I believe that until Zarr migrates to C or C++, it cannot be considered a viable option for production. Currently, there are efforts to support Zarr in GDAL, but it seems that its community is shifting towards Rust, specifically with the Icechunk project.
+## Final thoughts
 
-
-As you can see, there is no perfect format for n-dimensional data. With mGeoTIFF, we aim to
+As you can see, there is no perfect format for n-dimensional data. With mCOG, we aim to
 provide a simple, stable, and explicit format for n-dimensional arrays. By building on top of the
 COG layout. However, there are some drawbacks to this approach that data providers should be aware of:
 
-1. **Hard to apply streaming operations**, especially when user-defined overviews are involved. While not technically impossible, implementing streaming in mCOG is more complex and not as efficient compared to Zarr's chunked design, where this process is quite straightforward.
+1. **Hard to apply update operations**, especially when user-defined overviews are involved. While not
+technically impossible, implementing streaming in mCOG is more complex and not as efficient compared to
+Zarr's chunked design, where this process is quite straightforward.
 
-2. **Limited support for complex nested data structures**. It is not supported to store complex 
-nested data structures in mCOG, like a list of n-dimensional arrays. It is designed to handle one coordinate reference system (CRS) and one transform per file.
+2. **Limited support for complex nested data structures**. mCOG does not support complex 
+nested data structures, like a list of n-dimensional variables. It is designed to handle one
+coordinate reference system (CRS) and one transform per file.
 
-4. **Impossible to extend the chunking schema**. In mCOG, the chunking schema is 
-dimension fixed. This means that if you have a 4D array, you can only define the chunking schema
-as (1 x 1 x BLOCKXSIZE x BLOCKYSIZE), (1 x C x BLOCKXSIZE x BLOCKYSIZE) or (1 x C/n^2 x BLOCKXSIZE x BLOCKYSIZE). Chunking schema is a natural feature in Zarr or NetCDF5. This limitation is critical 
-because it will make it larger in size with respect to Zarr or NetCDF5, especially when there is a lot
-of redundancy in the data (e.g. climate data).
+3. **Fixed Chunking Schema**: In mCOG, the chunking schema is dimensionally fixed. This means that
+for a 4D array, the chunking structure can only be defined as:
+- `(1 × BLOCKXSIZE × BLOCKYSIZE)` when interleaves is band or tile,  
+- `(C × BLOCKXSIZE × BLOCKYSIZE)` when interleaves is by pixel, or  
+- `(C' × BLOCKXSIZE' × BLOCKYSIZE')` when `md:blockzsize` is different from 1.  
 
-Despite these limitations, we believe that multidimensional COG is currently the best option 
+Unlike Zarr or NetCDF5, which naturally support flexible chunking, this constraint in mCOG can lead to 
+larger file sizes, particularly when handling highly redundant data (e.g., climate datasets).
+
+
+Despite these limitations, we believe that mCOG is currently the best option 
 for many use cases. Whether you are creating a web map to visualize 10 years of changes in your 
 village or building a deep learning dataset with multitemporal samples, mCOG provides a 
 robust, mature, and reliable solution.
