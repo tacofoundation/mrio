@@ -1,16 +1,15 @@
 # The Multidimensional COG
 
-
 ## Overview
 
-Unlike GeoTIFF, which enforces strict metadata standards, traditional multidimensional formats typically rely on the flexible [CF metadata conventions](https://cfconventions.org/). While this flexibility offers broad applicability, it also leads to inconsistent implementations across software platforms and public datasets. Probably, the major concern is the lack of standardization for [CRS information](https://github.com/zarr-developers/geozarr-spec/issues/53); although CF conventions allow the inclusion of CRS details, they do not enforce a uniform format. Similar issues arise with other critical metadata components, such as the definition of temporal attributes and data overviews. Consequently, users often need to determine the appropriate structure manually, which can result in inconsistent dataset interpretations and additional preprocessing steps that further complicate geospatial workflows.
+Unlike GeoTIFF, which enforces strict geospatial metadata definition, traditional multidimensional formats typically rely on the flexible [CF metadata conventions](https://cfconventions.org/). While this flexibility offers broad applicability, it also leads to inconsistent implementations across software platforms and public datasets. Probably, the major concern is the lack of standardization for [CRS information](https://github.com/zarr-developers/geozarr-spec/issues/53); although CF conventions allow the inclusion of CRS details, they do not enforce a uniform format. Similar issues arise with other critical metadata components, such as the definition of temporal attributes and data overviews. Consequently, users often need to determine the appropriate structure manually, resulting in inconsistent dataset interpretations and additional preprocessing steps that further complicate geospatial workflows.
 
-To address these challenges, the Multidimensional COG (mCOG) specification extends the traditional GeoTIFF format to support N-dimensional arrays. Our core principle is that everything should be explicit by default. The mCOG format maintains the simplicity and compatibility of COG/GeoTIFF, offers fast and partial data access, and ensures compatibility with any GIS software or library that supports the GDALGeoTIFF format.
+To address these challenges, the Multidimensional COG (mCOG) specification extends the traditional GeoTIFF format to support N-dimensional arrays. We designed mCOG to maintain compatibility with GDAL (from version 3.1, when COG was introduced) and to ensure that critical metadata is **always explicit**. The mCOG format maintains the simplicity and compatibility of COG/GeoTIFF, offers fast and partial data access, and ensures compatibility with any GIS software or library that supports the GDALGeoTIFF format.
 
 The following decisions have been considered in the development of mCOG:
 
-- A mCOG must be compliant with the [COG specification](https://docs.ogc.org/is/21-026/21-026.html).
-- A mCOG must be compliant with the [STAC datacube specification](https://github.com/stac-extensions/datacube).
+- An mCOG must adhere to the [COG specification](https://docs.ogc.org/is/21-026/21-026.html), meaning each file can have only one geotransform and one CRS.
+- An mCOG must also comply with the [STAC datacube specification](https://github.com/stac-extensions/datacube), ensuring a single, standardized method for defining time and additional dimensions. Multiple variables are not supported.
 
 <figure style="display: flex; flex-direction: column; align-items: center">
   <img src="../../public/content-mcog.svg" alt="Band GIF" style="width: 60%">
@@ -24,11 +23,12 @@ The `MD_METADATA` tag is embedded within the `TIFFTAG_GDAL_METADATA` ASCII tag (
 
 | Field  | Type | Required | Details |
 |---|---|---|---|
-| md:pattern | string | Yes | A string defining the strategy to reshape the data into a 3D array (band, x, y). It is based on the [Einstein-Inspired Notation for OPerationS](https://openreview.net/pdf?id=oapKSVM2bcj), einops. The pattern is a space-separated list of dimension names, followed by an arrow `->`, and the new order of the dimensions. For example, `time band y x -> (time band) y x` rearranges the dimensions from `(time, band, y, x)` to `time×band y x`, where `time×band` is a new number of channels. As GeoTIFF define explicitly the `y` and `x` dimensions, the pattern **MUST** always include them in the same order. There is no restriction on the number of dimensions. Refer to the [einops paper](https://openreview.net/pdf?id=oapKSVM2bcj) for more details about the notation. |
+| md:pattern | string | Yes | A string defining the strategy to reshape the data into a 3D array (band, x, y). It is based on the [Einstein-Inspired Notation for OPerationS](https://openreview.net/pdf?id=oapKSVM2bcj), einops. The pattern is a space-separated list of dimension names, followed by an arrow `->`, and the new order of the dimensions. For example, `time band y x -> (time band) y x` rearranges the dimensions from `(time, band, y, x)` to `time×band y x`, where `time×band` is a new number of channels. As GeoTIFF define explicitly the `y` and `x` dimensions, the pattern **MUST** always include them in the same order. There are no restrictions on the number of input dimensions. However, reshape operations that modify `y` or `x` are not allowed, and the resulting pattern must always yield exactly three dimensions after the arrow. Refer to the [einops paper](https://openreview.net/pdf?id=oapKSVM2bcj) for more details about the notation. |
 | md:coordinates | dictionary | Yes | A dictionary-like container for coordinates, where key names **MUST** match those defined in `md:pattern`. The corresponding values **MUST**  always be lists. |
 | md:attributes | dictionary | No | A dictionary of additional metadata attributes to include in the file. It **MUST** comply with the [JSON standard](https://www.json.org/json-en.html). |
 | md:dimensions | list | No | A list of dimension names, where the order **MUST** align with the order specified in `md:pattern` before the arrow `->`. If not provided, it is automatically generated based on the `md:pattern` key. |
 | md:coordinates_len | dictionary | No | A dictionary defining the length of each dimension. The values **MUST** be integers. If omitted, it is automatically determined from the `md:coordinates` key. |
+| md:blockzsize | integer | No | A new `create option` parameter that defines the block size for the bands in a GeoTIFF. It must be set to either 1 or an integer value that is divisible by the number of bands after rearranging, with the default value being 1. This setting allows for greater control over how data is segmented within the file, which is important for optimizing access patterns and performance. Additionally, the division between `md:blockzsize` and the scale **MUST** yield a terminating number, ensuring that the scaling process does not result in non-terminating decimals. |
 
 ## Example
 
@@ -95,7 +95,7 @@ Data providers with large time dimensions (e.g., daily satellite imagery spannin
   <figcaption style="text-align: center"><b>Figure 2:</b>Visual comparison of the effects of different `md:pattern` strategies.</figcaption>
 </figure>
 
-By default, `mrio` assigns band descriptions (also known as band names) following the GDAL GeoTIFF convention. These descriptions are stored in the `TIFFTAG_GDAL_METADATA` XML tag. The band descriptions set names based on the `md:coordinates` key-value pairs. For example, given a Sentinel-2 5D array with the `md:pattern` of `product time band y x -> (band product time) y x`, the resulting band descriptions will be:
+By default, `mrio` assigns band descriptions (also known as band names) following the GDAL GeoTIFF convention when the `md:blockzsize` is set to 1.These descriptions are stored in the `TIFFTAG_GDAL_METADATA` XML tag. The band descriptions set names based on the `md:coordinates` key-value pairs. For example, given a Sentinel-2 5D array with the `md:pattern` of `product time band y x -> (band product time) y x`, the resulting band descriptions will be:
 
 ```
 band[0]__product[0]__time[0] # B01__boa__20210101
@@ -148,7 +148,18 @@ object with the associated attributes and coordinates. Numpy is supported too.
 
 ### BLOCKZSIZE
 
-TODO
+### BLOCKZSIZE
+
+The `BLOCKZSIZE` or `md:blockzsize` is not specified within the TIFF or GeoTIFF documentation. mCOG provides `BLOCKZSIZE` by compressing bands in space. While this is not an elegant solution, it allows storing millions of bands without compromising performance. The only value affected is the scale in the geotransform; the rotation and translation remain unchanged. The logic is as follows: if `md:blockzsize` is greater than 1, then:  
+
+1) Apply the `md:pattern` to rearrange the nD tensor into 3D.  
+
+2) Apply the arrangement once more with the pattern `(c c1 c2) h w -> c (h c1) (w c2)`, where `c1` and `c2` are the values of `md:blockzsize`. To avoid repeating decimals, the division between the scale and `md:blockzsize` **must** always result in a number with terminating decimals.
+
+<figure>
+  <img src="../../public/blockzsize.svg" alt="GeoTIFF file structure" style="width: 100%">
+  <figcaption style="text-align: center"><b>Figure 5: </b>Visual comparison of the effects of different `md:blockzsize` strategies.</figcaption>
+</figure>
 
 ## FAQ
 
@@ -162,7 +173,6 @@ are generated by `mrio`. Check BLOCKZSIZE for more details about problems with v
 Not natively. **mrio** was developed to manage n-dimensional data within our deep learning pipelines. Depending on community feedback, we would be happy to develop a dedicated GDAL driver to enhance interoperability in other programming languages. However, since **mCOG** is a Cloud-Optimized GeoTIFF (COG), it can already be read by GDAL. In fact, that is actually what the current Python API does. It uses GDAL to read the file, and then it virtually reshapes the data to the original shape.
 :::
 
-
 ::: details Which programming languages are supported? {close}
 The `mrio` API is currently available in Python.
 :::
@@ -175,76 +185,55 @@ Yes, you can! In fact, we developed `mrio` specifically for use in our internal 
 
 ## Why not use NetCDF, HDF5, or Zarr?
 
-::: warning  
-**A Personal Perspective:** This reflects our views, Cesar Aybar and Julio Contreras. Many 
-colleagues (including close friends!) actively advocate for [NetCDF](https://www.youtube.com/watch?v=m345_TUjIdI).
-We all think Zarr is great, but it is not ready yet!
-:::
-
-*“Explicit is better than implicit.”* ([The Zen of Python](https://peps.python.org/pep-0020/))
-
 While there are many existing byte containers for multidimensional arrays, such as NetCDF, HDF5, 
 and Zarr, our decision to use GeoTIFF stems from a combination of practical and community-based considerations:
 
-1. **Leverage Existing Tools and Expertise**: There are many byte container formats available online. In theory, one 
+1. **Good software is more important than specifications**: In theory, one 
 could design a multidimensional array format using TIFF by saving 
 each n-dimensional chunk in a separate IFD. With some effort, this approach could potentially 
 achieve efficiency comparable to other n-dimensional array formats. However, by choosing 
 the COG layout **all the necessary tools already exist**. GDAL is highly optimized for 
 working with COG files and is supported by a large, active community of experts continuously 
-improving and maintaining it. Back to the example of an illusional n-D chunked TIFF format, it 
-would not only require significant effort to develop but also writing a lot of code to ensure 
-compatibility with other software (i.e. QGIS). In practice, the success of a format often depends 
-more on the people supporting it than if a format is theoretically better than another.
+improving and maintaining it (This is more important than anything!). Back to the example of an illusional n-D chunked TIFF format, it would not only require significant effort to develop but also writing a lot of code to ensure compatibility with other software (i.e. QGIS). In practice, the success of a format often depends 
+more on the people supporting it than on whether a format is theoretically better than another.
 
 2. **Stability and Maturity**: GeoTIFF, in particular, has benefited from decades of development 
 and refinement, making it a mature and highly stable format. This stability and maturity are key 
-factors in its widespread adoption and reliability. One could argue that HDF5 is also "stable". 
-However, the key difference lies in its scope, HDF5 is an extremely ambitious project compared 
+factors in its widespread adoption and reliability. One could argue that HDF5 is also `stable`. 
+However, the key difference lies in its scope; HDF5 is an extremely ambitious project compared 
 to GeoTIFF or Zarr. Maintaining its large number of features and extensions is a complex task. Check 
 the [HDF5 specification](https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t3.html) to
-give you an idea of the complexity. Breaking changes between minor versions is very common, which 
-can disrupt compatibility for software built on top of it, such as NetCDF. This complexity makes 
-HDF5 less interoperable, specifically for less experienced users.
+give you an idea of the complexity. Breaking changes between minor versions are very common, which 
+can disrupt compatibility for software or formats built on top of it, such as NetCDF. This complexity
+makes HDF5 less interoperable, specifically for less experienced users.
 
-3. **Zarr's Promising Yet Nascent Approach**:
+4. **Why not just Zarr?**:
 
-Zarr is another general-purpose format, it is relatively new and highly flexible, with a 
-clear specification with fewer than 10 pages. In Zarr, almost everything except 
-for the datatype, compression, shape, and chunk size is implicit. Instead of being a 
-fully self-contained file format, Zarr operates more as a convention for organizing 
-n-dimensional arrays in a folder structure. Zarr is cool but it can be very challenging 
-to implement in an efficiency manner. Consider the case of a single Sentinel-2 scene 
-13x10980x10980 pixels (`CHUNKSIZE=128;INTERLEAVE=TILE`), all the data with overviews included
-can be just one COG file. In Zarr, considering the same chunk size, it will be 24037
-different files (we are not considering the overviews!). This is extremely inefficient
-and very costly in cloud storage. In a HTTP/2 context, GET operations that will cost
-1 HTTP request in a COG, will cost hundreds/thousands in Zarr. However, with the introduction 
-of sharding ([ZEP 2](https://zarr.dev/zeps/accepted/ZEP0002.html)), which enables chunk parsing,
-Zarr can partially solve this problem. Actually the Python [Zarr API](https://github.com/zarr-developers/zarr-python)  
-and the other non-official Python [Zarr API](https://github.com/ilan-gold/zarrs-python) already 
-support this feature. There are some geospatial initiatives like [GeoZarr](https://github.com/zarr-developers/geozarr-spec) but, 
-they are very incipient.
+Zarr is another general-purpose format; it is relatively new and highly flexible, with a 
+specification of fewer than 10 pages. In Zarr, almost everything except for the datatype,
+compression, shape, and chunk size is implicit. A la hora de escribir esto no existe ningun
+standard similar a GeoTIFF in Zarr. Instead of being a fully self-contained file format, Zarr
+operates more as a convention for organizing n-dimensional arrays in a folder structure.
+
+One of our main concerns with Zarr is that many changes may be made without proper documentation. This issue is particularly critical given that Zarr's primary official implementation is written in Python, as opposed to the cross-platform C implementations found in formats such as HDF or GeoTIFF (GDAL). The direct consequence is a lack of interoperability even within software that implements the same format. From my perspective, I believe that until Zarr migrates to C or C++, it cannot be considered a viable option for production. Currently, there are efforts to support Zarr in GDAL, but it seems that its community is shifting towards Rust, specifically with the Icechunk project.
+
 
 As you can see, there is no perfect format for n-dimensional data. With mGeoTIFF, we aim to
 provide a simple, stable, and explicit format for n-dimensional arrays. By building on top of the
 COG layout. However, there are some drawbacks to this approach that data providers should be aware of:
 
-1. **Hard to apply streaming operations**, especially when user-defined overviews are involved. While not 
-technically impossible, implementing streaming in mCOG is more complex compared to Zarr's chunked 
-design, where this process is quite more straightforward.
+1. **Hard to apply streaming operations**, especially when user-defined overviews are involved. While not technically impossible, implementing streaming in mCOG is more complex and not as efficient compared to Zarr's chunked design, where this process is quite straightforward.
 
 2. **Limited support for complex nested data structures**. It is not supported to store complex 
-nested data structures in mCOG, like a list of n-dimensional arrays.
+nested data structures in mCOG, like a list of n-dimensional arrays. It is designed to handle one coordinate reference system (CRS) and one transform per file.
 
-3. **Imposible to extend the chunking schema**. In mGeoTIFF, the chunking schema is 
+4. **Impossible to extend the chunking schema**. In mCOG, the chunking schema is 
 dimension fixed. This means that if you have a 4D array, you can only define the chunking schema
-as (1 x 1 x BLOCKXSIZE x BLOCKYSIZE) or (1 x C x BLOCKXSIZE x BLOCKYSIZE) if pixel interleave is
-used. Chunking schema is a natural feature in Zarr or NetCDF5. This limitation is critical 
+as (1 x 1 x BLOCKXSIZE x BLOCKYSIZE), (1 x C x BLOCKXSIZE x BLOCKYSIZE) or (1 x C/n^2 x BLOCKXSIZE x BLOCKYSIZE). Chunking schema is a natural feature in Zarr or NetCDF5. This limitation is critical 
 because it will make it larger in size with respect to Zarr or NetCDF5, especially when there is a lot
 of redundancy in the data (e.g. climate data).
 
-Despite these limitations, we believe that multidimensional GeoTIFF is currently the best option 
+Despite these limitations, we believe that multidimensional COG is currently the best option 
 for many use cases. Whether you are creating a web map to visualize 10 years of changes in your 
 village or building a deep learning dataset with multitemporal samples, mCOG provides a 
 robust, mature, and reliable solution.
