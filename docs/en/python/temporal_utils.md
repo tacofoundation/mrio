@@ -1,6 +1,6 @@
-# Utility functions for temporal data processing
+# Utility functions for tCOG data processing
 
-For users that want a easy to stack/unstack temporal data, this module provides a set of functions to help with that.
+For users who want an easy way to stack/unstack tCOG, this module provides a set of functions to help with that.
 
 ## `mrio.temporal.unstack`
 
